@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
 using Microsoft.Win32;
+using WiFIMap.Interfaces;
 using WiFIMap.Model;
 
 namespace WiFIMap.ViewModels
@@ -60,32 +61,31 @@ namespace WiFIMap.ViewModels
                                     "|All Files|*.*";
             if (openFileDialog.ShowDialog() == true)
             {
-                if (CurrentPageViewModel is ScanVm scanVm)
+                var project = new Project();
+                project.Load(openFileDialog.FileName);
+                CurrentPageViewModel = new ScanVm(project);
+            }
+        }
+
+        private IProject GetCurrentProject()
+        {
+            switch (CurrentPageViewModel)
+            {
+                case ScanVm scanVm:
+                    return scanVm.CurrentProject;
+                case ResultVm resultVm:
+                    return resultVm.CurrentProject;
+                default:
                 {
-                    scanVm.CurrentProject.Save(openFileDialog.FileName);
-                }
-                else
-                {
-                    if (CurrentPageViewModel is ResultVm resultVm)
-                    {
-                        resultVm.CurrentProject.Save(openFileDialog.FileName);
-                    }
-                    else
-                    {
-                        var project = new Project();
-                        project.Load(openFileDialog.FileName);
-                        CurrentPageViewModel = new ScanVm(project);
-                    }
+                    return null;
                 }
             }
         }
 
         private bool SaveProjectCanExecute(object arg)
         {
-            return HasCurrentProject;
+            return GetCurrentProject() != null;
         }
-
-        private bool HasCurrentProject => !(_currentPageViewModel is BlankVm);
 
         public void OnSaveProject(object param)
         {
@@ -95,27 +95,15 @@ namespace WiFIMap.ViewModels
                                     "|All Files|*.*";
             if(openFileDialog.ShowDialog() == true)
             {
-                if (CurrentPageViewModel is ScanVm scanVm)
-                {
-                    scanVm.CurrentProject.Save(openFileDialog.FileName);
-                }
-                else
-                {
-                    if (CurrentPageViewModel is ResultVm resultVm)
-                    {
-                        resultVm.CurrentProject.Save(openFileDialog.FileName);
-                    }
-                    else
-                    {
-                        throw new NotImplementedException("You can save only from scan or result mode.");
-                    }
-                }
+                var currentProject = GetCurrentProject();
+                currentProject.Save(openFileDialog.FileName);
             }
         }
 
         public void OnClose(CancelEventArgs e)
         {
-            if (HasCurrentProject)
+            var currentProject = GetCurrentProject();
+            if (currentProject?.IsModified == true)
             {
                 if (MessageBox.Show("Exit without saving?", "Exit", MessageBoxButton.YesNoCancel) !=
                     MessageBoxResult.Yes)

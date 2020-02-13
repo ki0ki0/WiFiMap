@@ -12,6 +12,7 @@ using System.Windows.Media.Imaging;
 using Microsoft.Xaml.Behaviors.Core;
 using WiFIMap.Interfaces;
 using WiFIMap.Model;
+using WiFIMap.Network;
 
 namespace WiFIMap.ViewModels
 {
@@ -21,6 +22,8 @@ namespace WiFIMap.ViewModels
         private double _scaleFactor = 1;
         private double _scaleFactorMax = 10;
         private double _scaleFactorMin = 0.1;
+        private NetworkInfo _networkInfo = new NetworkInfo();
+        private ObservableCollection<ScanPoint> _items;
 
         public ScanVm(IProject project)
         {
@@ -31,8 +34,8 @@ namespace WiFIMap.ViewModels
 
         private void Load()
         {
-            _image = CurrentProject.Bitmap;
-            Items = new ObservableCollection<ScanPoint>();
+            Image = CurrentProject.Bitmap;
+            Items = CurrentProject.Items;
         }
 
         private void CurrentProjectOnProjectChanged(object sender, EventArgs e)
@@ -58,10 +61,19 @@ namespace WiFIMap.ViewModels
         {
             var inputElement = e.Source as IInputElement;
             var position = e.GetPosition(inputElement);
-            Items.Add(new ScanPoint(position.X, position.Y));
+            var bssInfo = _networkInfo.GetBssInfo();
+            Items.Add(new ScanPoint(position.X, position.Y, bssInfo));
         }
 
-        public ObservableCollection<ScanPoint> Items { get; set; }
+        public ObservableCollection<ScanPoint> Items
+        {
+            get => _items;
+            set
+            {
+                _items = value;
+                OnPropertyChanged(nameof(Items));
+            }
+        }
 
         public double ScaleFactor
         {

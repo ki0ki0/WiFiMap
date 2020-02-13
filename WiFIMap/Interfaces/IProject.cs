@@ -1,6 +1,8 @@
 ﻿using System;
+using System.Collections.ObjectModel;
 using System.IO;
 using System.Windows.Media;
+using WiFIMap.ViewModels;
 
 namespace WiFIMap.Interfaces
 {
@@ -11,5 +13,7 @@ namespace WiFIMap.Interfaces
 
         event EventHandler<EventArgs> ProjectChanged;
         ImageSource Bitmap { get; set; }
+        ObservableCollection<ScanPoint> Items { get; set; }
+        bool IsModified { get; set; }
     }
 }
