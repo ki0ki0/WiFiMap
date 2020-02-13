@@ -4,9 +4,48 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:WiFIMap"
+        xmlns:views="clr-namespace:WiFIMap.Views"
+        xmlns:viewModels="clr-namespace:WiFIMap.ViewModels"
+        xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
+        xmlns:b="http://schemas.microsoft.com/xaml/behaviors"
         mc:Ignorable="d"
-        Title="MainWindow" Height="450" Width="800">
-    <Grid>
-        
-    </Grid>
+        x:Name="MainWindowView"
+        Title="HeatMap" Height="450" Width="800">
+
+    <Window.Resources>
+        <DataTemplate DataType="{x:Type viewModels:BlankVm}">
+            <views:BlankView />
+        </DataTemplate>
+        <DataTemplate DataType="{x:Type viewModels:ScanVm}">
+            <views:ScanView />
+        </DataTemplate>
+        <DataTemplate DataType="{x:Type viewModels:ResultVm}">
+            <views:ResultView/>
+        </DataTemplate>
+        <viewModels:MainVm x:Key="MainVm"/>
+    </Window.Resources>
+
+    <b:Interaction.Triggers>
+        <b:EventTrigger EventName="Closing">
+            <b:InvokeCommandAction Command="{Binding Close}" PassEventArgsToCommand="True"/>
+        </b:EventTrigger>
+    </b:Interaction.Triggers>
+
+    <Window.DataContext><Binding Source="{StaticResource MainVm}"></Binding></Window.DataContext>
+
+    <DockPanel VerticalAlignment="Stretch" >
+        <Menu DockPanel.Dock="Top" Width="Auto" Height="20">
+            <MenuItem Header="_File">
+                <MenuItem Header="_New project" Command="{Binding NewProject}"/>
+                <MenuItem Header="_Load project" Command="{Binding LoadProject}"/>
+                <MenuItem Header="_Save project" Command="{Binding SaveProject}"/>
+                <Separator/>
+                <MenuItem Header="E_xit" Command="{Binding Exit}"/>
+            </MenuItem>
+            <!--<MenuItem Header="_Tools">
+                <MenuItem x:Name="Options" Header="_Options"/>
+            </MenuItem>-->
+        </Menu>
+        <ContentControl Content="{Binding CurrentPageViewModel}" />
+    </DockPanel>
 </Window>

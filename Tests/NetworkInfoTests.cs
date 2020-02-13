@@ -203,7 +203,6 @@ namespace Tests
                 && entity.Channel == 3);
         }
 
-
         [Fact]
         public void GetBssInfo_NoInterface_ValidList()
         {

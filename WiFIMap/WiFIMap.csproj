@@ -38,6 +38,9 @@
     <Reference Include="ManagedWifi, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\managedwifi.1.1.0\lib\net20\ManagedWifi.dll</HintPath>
     </Reference>
+    <Reference Include="Microsoft.Xaml.Behaviors, Version=1.1.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.Xaml.Behaviors.Wpf.1.1.19\lib\net45\Microsoft.Xaml.Behaviors.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Data" />
     <Reference Include="System.Xml" />
@@ -58,6 +61,23 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="Properties\Annotations.cs" />
+    <Compile Include="ViewModels\BaseVm.cs" />
+    <Compile Include="ViewModels\BasicCommand.cs" />
+    <Compile Include="ViewModels\BlankVm.cs" />
+    <Compile Include="ViewModels\Command.cs" />
+    <Compile Include="ViewModels\MainVm.cs" />
+    <Compile Include="ViewModels\ResultVm.cs" />
+    <Compile Include="ViewModels\ScanVm.cs" />
+    <Compile Include="Views\BlankView.xaml.cs">
+      <DependentUpon>BlankView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\ResultView.xaml.cs">
+      <DependentUpon>ResultView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\ScanView.xaml.cs">
+      <DependentUpon>ScanView.xaml</DependentUpon>
+    </Compile>
     <Page Include="MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -73,6 +93,18 @@
       <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
+    <Page Include="Views\BlankView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\ResultView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\ScanView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Interfaces\IWlanInterface.cs" />
