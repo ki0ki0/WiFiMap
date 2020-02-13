@@ -61,13 +61,17 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="Interfaces\IProject.cs" />
+    <Compile Include="Model\Project.cs" />
     <Compile Include="Properties\Annotations.cs" />
     <Compile Include="ViewModels\BaseVm.cs" />
     <Compile Include="ViewModels\BasicCommand.cs" />
     <Compile Include="ViewModels\BlankVm.cs" />
     <Compile Include="ViewModels\Command.cs" />
+    <Compile Include="Interfaces\IProjectContainer.cs" />
     <Compile Include="ViewModels\MainVm.cs" />
     <Compile Include="ViewModels\ResultVm.cs" />
+    <Compile Include="ViewModels\ScanPoint.cs" />
     <Compile Include="ViewModels\ScanVm.cs" />
     <Compile Include="Views\BlankView.xaml.cs">
       <DependentUpon>BlankView.xaml</DependentUpon>

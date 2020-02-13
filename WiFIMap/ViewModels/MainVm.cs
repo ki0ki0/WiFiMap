@@ -6,6 +6,8 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
+using Microsoft.Win32;
+using WiFIMap.Model;
 
 namespace WiFIMap.ViewModels
 {
@@ -39,12 +41,43 @@ namespace WiFIMap.ViewModels
 
         public void OnNewProject(object param)
         {
-            CurrentPageViewModel = new ScanVm();
+            var openFileDialog = new OpenFileDialog();
+            openFileDialog.Title = "Select image with the plan";
+            openFileDialog.Filter = "Images|*.jpg;*.png" +
+                                    "|All Files|*.*";
+            if(openFileDialog.ShowDialog() == true)
+            {
+                var project = new Project(openFileDialog.FileName);
+                CurrentPageViewModel = new ScanVm(project);
+            }
         }
 
         public void OnLoadProject(object param)
         {
-
+            var openFileDialog = new OpenFileDialog();
+            openFileDialog.Title = "Select project file";
+            openFileDialog.Filter = "HeatMap Project|*.heatproject" +
+                                    "|All Files|*.*";
+            if (openFileDialog.ShowDialog() == true)
+            {
+                if (CurrentPageViewModel is ScanVm scanVm)
+                {
+                    scanVm.CurrentProject.Save(openFileDialog.FileName);
+                }
+                else
+                {
+                    if (CurrentPageViewModel is ResultVm resultVm)
+                    {
+                        resultVm.CurrentProject.Save(openFileDialog.FileName);
+                    }
+                    else
+                    {
+                        var project = new Project();
+                        project.Load(openFileDialog.FileName);
+                        CurrentPageViewModel = new ScanVm(project);
+                    }
+                }
+            }
         }
 
         private bool SaveProjectCanExecute(object arg)
@@ -56,7 +89,28 @@ namespace WiFIMap.ViewModels
 
         public void OnSaveProject(object param)
         {
-
+            var openFileDialog = new SaveFileDialog();
+            openFileDialog.Title = "Select project file";
+            openFileDialog.Filter = "HeatMap Project|*.heatproject" +
+                                    "|All Files|*.*";
+            if(openFileDialog.ShowDialog() == true)
+            {
+                if (CurrentPageViewModel is ScanVm scanVm)
+                {
+                    scanVm.CurrentProject.Save(openFileDialog.FileName);
+                }
+                else
+                {
+                    if (CurrentPageViewModel is ResultVm resultVm)
+                    {
+                        resultVm.CurrentProject.Save(openFileDialog.FileName);
+                    }
+                    else
+                    {
+                        throw new NotImplementedException("You can save only from scan or result mode.");
+                    }
+                }
+            }
         }
 
         public void OnClose(CancelEventArgs e)
