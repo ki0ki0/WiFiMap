@@ -3,25 +3,22 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
 using Microsoft.Win32;
-using WiFIMap.Interfaces;
 using WiFIMap.Model;
 
 namespace WiFIMap.ViewModels
 {
     public class MainVm : BaseVm
     {
-        private BaseVm _currentPageViewModel;
+        private IProjectContainerVm _currentPageViewModel = new BlankVm();
+        private CancellationTokenSource _cancellationTokenSource;
+        private Task _task;
 
-        public MainVm()
-        {
-            _currentPageViewModel = new BlankVm();
-        }
-
-        public BaseVm CurrentPageViewModel
+        public IProjectContainerVm CurrentPageViewModel
         {
             get => _currentPageViewModel;
             private set
@@ -49,8 +46,30 @@ namespace WiFIMap.ViewModels
             if(openFileDialog.ShowDialog() == true)
             {
                 var project = new Project(openFileDialog.FileName);
-                CurrentPageViewModel = new ScanVm(project);
+                _task = StartFlow(project);
             }
+        }
+
+        private async Task StartFlow(Project project)
+        {
+            await StartScan(project);
+            await StartShow(project);
+        }
+
+        private async Task StartShow(Project project)
+        {
+            _cancellationTokenSource = new CancellationTokenSource();
+            var currentPageViewModel = new ResultVm();
+            CurrentPageViewModel = currentPageViewModel;
+            await currentPageViewModel.Show(project, _cancellationTokenSource.Token);
+        }
+
+        private async Task StartScan(Project project)
+        {
+            _cancellationTokenSource = new CancellationTokenSource();
+            var currentPageViewModel = new ScanVm();
+            CurrentPageViewModel = currentPageViewModel;
+            await currentPageViewModel.Scan(project, _cancellationTokenSource.Token);
         }
 
         public void OnLoadProject(object param)
@@ -63,28 +82,14 @@ namespace WiFIMap.ViewModels
             {
                 var project = new Project();
                 project.Load(openFileDialog.FileName);
-                CurrentPageViewModel = new ScanVm(project);
-            }
-        }
-
-        private IProject GetCurrentProject()
-        {
-            switch (CurrentPageViewModel)
-            {
-                case ScanVm scanVm:
-                    return scanVm.CurrentProject;
-                case ResultVm resultVm:
-                    return resultVm.CurrentProject;
-                default:
-                {
-                    return null;
-                }
+                
+                _task = StartFlow(project);
             }
         }
 
         private bool SaveProjectCanExecute(object arg)
         {
-            return GetCurrentProject() != null;
+            return CurrentPageViewModel.IsModified;
         }
 
         public void OnSaveProject(object param)
@@ -95,22 +100,23 @@ namespace WiFIMap.ViewModels
                                     "|All Files|*.*";
             if(openFileDialog.ShowDialog() == true)
             {
-                var currentProject = GetCurrentProject();
-                currentProject.Save(openFileDialog.FileName);
+                CurrentPageViewModel.Save(openFileDialog.FileName);
             }
         }
 
         public void OnClose(CancelEventArgs e)
         {
-            var currentProject = GetCurrentProject();
-            if (currentProject?.IsModified == true)
+            if (CurrentPageViewModel?.IsModified == true)
             {
                 if (MessageBox.Show("Exit without saving?", "Exit", MessageBoxButton.YesNoCancel) !=
                     MessageBoxResult.Yes)
                 {
                     e.Cancel = true;
+                    return;
                 }
             }
+            _cancellationTokenSource.Cancel();
+            //_task.Wait();
         }
 
         public void OnExit(object param)

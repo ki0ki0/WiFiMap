@@ -7,11 +7,16 @@
              xmlns:viewModels="clr-namespace:WiFIMap.ViewModels"
              xmlns:b="http://schemas.microsoft.com/xaml/behaviors"
              mc:Ignorable="d"
-             d:DesignHeight="450" d:DesignWidth="800" d:DataContext="{d:DesignInstance viewModels:ScanVm}">
+             d:DesignHeight="450" d:DesignWidth="800" d:DataContext="{d:DesignData viewModels:ScanVm}">
     <DockPanel VerticalAlignment="Stretch">
 
+        <DockPanel DockPanel.Dock="Top" HorizontalAlignment="Stretch" >
 
-        <Slider Minimum="{Binding ScaleFactorMin}" Maximum="{Binding ScaleFactorMax}" SmallChange="0.1" DockPanel.Dock="Top" Value="{Binding ScaleFactor}" />
+            <Button VerticalAlignment="Center" Content="Finish scanning" Command="{Binding Finish}" Padding="4" Margin="4"/>
+            <Label VerticalAlignment="Center">Zoom:</Label>
+            <Slider VerticalAlignment="Center" Minimum="{Binding ScaleFactorMin}" Maximum="{Binding ScaleFactorMax}" SmallChange="0.1"  Value="{Binding ScaleFactor}" HorizontalAlignment="Stretch"/>
+
+        </DockPanel>
         <ScrollViewer HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto" CanContentScroll="True">
             
             <Grid>

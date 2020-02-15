@@ -3,10 +3,14 @@ using System.Text;
 using NativeWifi;
 using WiFIMap.Interfaces;
 
-namespace WiFIMap.Network
+namespace WiFIMap.Model.Network
 {
     public class BssEntity : IEntity
     {
+        public BssEntity()
+        {
+        }
+
         public string Ssid { get; }
         public string Mac { get; }
         public int Rssi { get; }

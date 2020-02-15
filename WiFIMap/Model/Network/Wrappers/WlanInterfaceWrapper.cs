@@ -3,7 +3,7 @@ using System.Net.NetworkInformation;
 using NativeWifi;
 using WiFIMap.Interfaces;
 
-namespace WiFIMap.Network.Wrappers
+namespace WiFIMap.Model.Network.Wrappers
 {
     public class WlanInterfaceWrapper : IWlanInterface
     {

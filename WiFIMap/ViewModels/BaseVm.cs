@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel;
 using System.Runtime.CompilerServices;
-using WiFIMap.Annotations;
+using WiFIMap.Properties;
 
 namespace WiFIMap.ViewModels
 {

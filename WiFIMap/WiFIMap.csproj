@@ -41,6 +41,9 @@
     <Reference Include="Microsoft.Xaml.Behaviors, Version=1.1.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
       <HintPath>..\packages\Microsoft.Xaml.Behaviors.Wpf.1.1.19\lib\net45\Microsoft.Xaml.Behaviors.dll</HintPath>
     </Reference>
+    <Reference Include="Newtonsoft.Json, Version=12.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <HintPath>..\packages\Newtonsoft.Json.12.0.3\lib\net45\Newtonsoft.Json.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Data" />
     <Reference Include="System.Xml" />
@@ -63,12 +66,14 @@
     </ApplicationDefinition>
     <Compile Include="Interfaces\IProject.cs" />
     <Compile Include="Model\Project.cs" />
+    <Compile Include="Model\ImageCoder.cs" />
     <Compile Include="Properties\Annotations.cs" />
     <Compile Include="ViewModels\BaseVm.cs" />
     <Compile Include="ViewModels\BasicCommand.cs" />
     <Compile Include="ViewModels\BlankVm.cs" />
     <Compile Include="ViewModels\Command.cs" />
     <Compile Include="Interfaces\IProjectContainer.cs" />
+    <Compile Include="ViewModels\IProjectContainerVm.cs" />
     <Compile Include="ViewModels\MainVm.cs" />
     <Compile Include="ViewModels\ResultVm.cs" />
     <Compile Include="ViewModels\ScanPoint.cs" />
@@ -90,7 +95,7 @@
       <DependentUpon>App.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Network\BssEntity.cs" />
+    <Compile Include="Model\Network\BssEntity.cs" />
     <Compile Include="Interfaces\IEntity.cs" />
     <Compile Include="Interfaces\INetworkInfo.cs" />
     <Compile Include="MainWindow.xaml.cs">
@@ -113,10 +118,10 @@
   <ItemGroup>
     <Compile Include="Interfaces\IWlanInterface.cs" />
     <Compile Include="Interfaces\IWlanClient.cs" />
-    <Compile Include="Network\Metadata.cs" />
-    <Compile Include="Network\NetworkInfo.cs" />
-    <Compile Include="Network\Wrappers\WlanClientWrapper.cs" />
-    <Compile Include="Network\Wrappers\WlanInterfaceWrapper.cs" />
+    <Compile Include="Model\Network\Metadata.cs" />
+    <Compile Include="Model\Network\NetworkInfo.cs" />
+    <Compile Include="Model\Network\Wrappers\WlanClientWrapper.cs" />
+    <Compile Include="Model\Network\Wrappers\WlanInterfaceWrapper.cs" />
     <Compile Include="Properties\AssemblyInfo.cs">
       <SubType>Code</SubType>
     </Compile>

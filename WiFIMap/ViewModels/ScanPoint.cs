@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using WiFIMap.Interfaces;
 
 namespace WiFIMap.ViewModels
@@ -10,7 +11,7 @@ namespace WiFIMap.ViewModels
         {
             Left = left;
             Top = top;
-            BssInfo = bssInfo;
+            BssInfo = bssInfo.ToArray();
         }
 
         public Double Left { get; set; }

@@ -8,6 +8,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
+using Newtonsoft.Json;
 using WiFIMap.Interfaces;
 using WiFIMap.ViewModels;
 
@@ -15,42 +16,45 @@ namespace WiFIMap.Model
 {
     public class Project : IProject
     {
+
         public Project()
         {
         }
 
         public Project(string fileName)
-        {
+        {   
             var bitmapDecoder = BitmapDecoder.Create(new Uri(fileName), BitmapCreateOptions.None, BitmapCacheOption.Default);
-            Bitmap = bitmapDecoder.Frames[0];
-            Items = new ObservableCollection<ScanPoint>();
-            Items.CollectionChanged += ItemsOnCollectionChanged;
-            IsModified = true;
-        }
-
-        private void ItemsOnCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
-        {
-            IsModified = true;
+            var bitmap = bitmapDecoder.Frames[0];
+            Bitmap = ImageCoder.ImageToByte(bitmap);
+            Items = new List<ScanPoint>();
         }
 
         public void Load(string fileName)
         {
-            OnProjectChanged();
+            var settings = new JsonSerializerSettings()
+            {
+                TypeNameHandling = TypeNameHandling.All
+            };
+
+            var deserializeObject = JsonConvert.DeserializeObject<Project>(File.ReadAllText(fileName), settings);
+            Bitmap = deserializeObject.Bitmap;
+            Items = new List<ScanPoint>(deserializeObject.Items);
         }
 
         public void Save(string fileName)
         {
-            IsModified = false;
+            var settings = new JsonSerializerSettings()
+            {
+                TypeNameHandling = TypeNameHandling.All
+            };
+            File.WriteAllText(fileName, JsonConvert.SerializeObject(this, settings));
         }
+        
+        [JsonProperty]
+        public List<ScanPoint> Items { get; set; }
+        
+        [JsonProperty]
+        public byte[] Bitmap { get; set; }
 
-        public ImageSource Bitmap { get; set; }
-        public ObservableCollection<ScanPoint> Items { get; set; }
-        public bool IsModified { get; set; }
-        public event EventHandler<EventArgs> ProjectChanged;
-
-        protected virtual void OnProjectChanged()
-        {
-            ProjectChanged?.Invoke(this, EventArgs.Empty);
-        }
     }
 }

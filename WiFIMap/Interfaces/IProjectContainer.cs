@@ -2,6 +2,8 @@
 {
     public interface IProjectContainer
     {
-        IProject CurrentProject { get; }
+        bool IsModified { get; }
+        
+        void Save(string fileName);
     }
 }

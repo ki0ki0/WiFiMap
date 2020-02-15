@@ -6,10 +6,10 @@ using System.Threading.Tasks;
 using NativeWifi;
 using WiFIMap;
 using WiFIMap.Interfaces;
-using WiFIMap.Network;
 using Xunit;
 using NSubstitute;
 using NSubstitute.ExceptionExtensions;
+using WiFIMap.Model.Network;
 
 namespace Tests
 {

@@ -3,9 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using NativeWifi;
 using WiFIMap.Interfaces;
-using WiFIMap.Network.Wrappers;
+using WiFIMap.Model.Network.Wrappers;
 
-namespace WiFIMap.Network
+namespace WiFIMap.Model.Network
 {
     public class NetworkInfo : INetworkInfo
     {

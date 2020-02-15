@@ -1,7 +1,8 @@
-﻿using System;
+﻿using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.IO;
 using System.Windows.Media;
+using System.Windows.Media.Imaging;
 using WiFIMap.ViewModels;
 
 namespace WiFIMap.Interfaces
@@ -11,9 +12,7 @@ namespace WiFIMap.Interfaces
         void Load(string fileName);
         void Save(string fileName);
 
-        event EventHandler<EventArgs> ProjectChanged;
-        ImageSource Bitmap { get; set; }
-        ObservableCollection<ScanPoint> Items { get; set; }
-        bool IsModified { get; set; }
+        byte[] Bitmap { get; set; }
+        List<ScanPoint> Items { get; set; }
     }
 }

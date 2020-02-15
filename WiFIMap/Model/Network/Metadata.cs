@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace WiFIMap.Network
+namespace WiFIMap.Model.Network
 {
     public static class Metadata
     {

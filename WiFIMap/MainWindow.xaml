@@ -46,6 +46,8 @@
                 <MenuItem x:Name="Options" Header="_Options"/>
             </MenuItem>-->
         </Menu>
+       
         <ContentControl Content="{Binding CurrentPageViewModel}" />
+       
     </DockPanel>
 </Window>

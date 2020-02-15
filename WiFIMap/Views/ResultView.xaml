@@ -3,10 +3,70 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
-             xmlns:local="clr-namespace:WiFIMap.Views"
+             xmlns:local="clr-namespace:WiFIMap.Views" 
+             xmlns:b="http://schemas.microsoft.com/xaml/behaviors"
              mc:Ignorable="d" 
-             d:DesignHeight="450" d:DesignWidth="800">
-    <Grid>
+             d:DesignHeight="450" d:DesignWidth="800" d:DataContext="{d:DesignData viewModels:ResultVm}">
+    <DockPanel VerticalAlignment="Stretch">
+
+        <DockPanel DockPanel.Dock="Top" HorizontalAlignment="Stretch" >
+
+            <Label VerticalAlignment="Center">Zoom:</Label>
+            <Slider VerticalAlignment="Center" Minimum="{Binding ScaleFactorMin}" Maximum="{Binding ScaleFactorMax}" SmallChange="0.1"  Value="{Binding ScaleFactor}" HorizontalAlignment="Stretch"/>
+
+        </DockPanel>
+
+        <ListBox DockPanel.Dock="Left" ItemsSource="{Binding Networks}"></ListBox>
+        <ScrollViewer HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto" CanContentScroll="True">
             
-    </Grid>
+            <Grid>
+                
+                <b:Interaction.Triggers>
+                    <b:EventTrigger EventName="MouseWheel">
+                        <b:InvokeCommandAction Command="{Binding Wheel}" PassEventArgsToCommand="True" />
+                    </b:EventTrigger>
+
+                </b:Interaction.Triggers>
+
+                <Grid.LayoutTransform>
+                    <ScaleTransform ScaleX="{Binding ScaleFactor}" ScaleY="{Binding ScaleFactor}" />
+                </Grid.LayoutTransform>
+
+                <Image Source="{Binding Image}" Stretch="None" HorizontalAlignment="Left" VerticalAlignment="Top">
+                    <b:Interaction.Triggers>
+                        <b:EventTrigger EventName="MouseUp">
+                            <b:InvokeCommandAction Command="{Binding Click}" PassEventArgsToCommand="True" />
+                        </b:EventTrigger>
+
+                        <!--<b:EventTrigger EventName="MouseWheel">
+                            <b:InvokeCommandAction Command="{Binding Wheel}" PassEventArgsToCommand="True" />
+                        </b:EventTrigger>-->
+                    </b:Interaction.Triggers>
+                </Image>
+
+                <ItemsControl ItemsSource="{Binding Items}">
+                    <ItemsControl.ItemsPanel>
+                        <ItemsPanelTemplate>
+                            <Canvas />
+                        </ItemsPanelTemplate>
+                    </ItemsControl.ItemsPanel>
+                    <ItemsControl.ItemContainerStyle>
+                        <Style TargetType="ContentPresenter">
+                            <Setter Property="Canvas.Top" Value="{Binding Top}" />
+                            <Setter Property="Canvas.Left" Value="{Binding Left}" />
+                        </Style>
+                    </ItemsControl.ItemContainerStyle>
+                    <ItemsControl.ItemTemplate>
+                        <DataTemplate>
+                            <Ellipse Width="10" Height="10" Fill="Aqua">
+                                <Ellipse.RenderTransform>
+                                    <TranslateTransform X="-5" Y="-5" />
+                                </Ellipse.RenderTransform>
+                            </Ellipse>
+                        </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                </ItemsControl>
+            </Grid>
+        </ScrollViewer>
+    </DockPanel>
 </UserControl>
