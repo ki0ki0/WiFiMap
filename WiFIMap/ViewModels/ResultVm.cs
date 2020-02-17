@@ -23,6 +23,7 @@ namespace WiFIMap.ViewModels
         private ObservableCollection<ScanPoint> _items;
         private Project _project;
         private TaskCompletionSource<IProject> _taskCompletionSource;
+        private ObservableCollection<string> _networks;
 
         public ImageSource Image
         {
@@ -48,6 +49,16 @@ namespace WiFIMap.ViewModels
             {
                 _items = value;
                 OnPropertyChanged(nameof(Items));
+            }
+        }
+
+        public ObservableCollection<string> Networks
+        {
+            get => _networks;
+            private set
+            {
+                _networks = value;
+                OnPropertyChanged(nameof(Networks));
             }
         }
 
@@ -103,6 +114,9 @@ namespace WiFIMap.ViewModels
 
             Image = ImageCoder.ByteToImage(_project.Bitmap);
             Items = new ObservableCollection<ScanPoint>(_project.Items);
+
+            Networks = new ObservableCollection<string>(Items.SelectMany(point => point.BssInfo)
+                .Select(entity => $"{entity.Ssid}({entity.Mac})").Distinct());
 
             cancellationToken.Register(Cancellation);
 

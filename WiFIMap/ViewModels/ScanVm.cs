@@ -101,6 +101,7 @@ namespace WiFIMap.ViewModels
 
         private void OnFinish(MouseWheelEventArgs obj)
         {
+            UpdateProject();
             _taskCompletionSource.SetResult(_project);
         }
 
@@ -143,9 +144,14 @@ namespace WiFIMap.ViewModels
 
         public void Save(string fileName)
         {
-            _project.Items = new List<ScanPoint>(Items);
+            UpdateProject();
             _project.Save(fileName);
             IsModified = false;
+        }
+
+        private void UpdateProject()
+        {
+            _project.Items = new List<ScanPoint>(Items);
         }
     }
 }
