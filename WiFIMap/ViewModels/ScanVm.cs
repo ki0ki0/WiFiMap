@@ -109,7 +109,7 @@ namespace WiFIMap.ViewModels
         {
             if (Keyboard.PrimaryDevice.IsKeyDown(Key.LeftCtrl) || Keyboard.PrimaryDevice.IsKeyDown(Key.RightCtrl))
             {
-                ScaleFactor += ((double)obj.Delta)/100;
+                ScaleFactor += 0.1 * obj.Delta/Math.Abs(obj.Delta);
                 obj.Handled = true;
             }
         }
