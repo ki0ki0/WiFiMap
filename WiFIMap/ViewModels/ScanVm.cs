@@ -39,13 +39,13 @@ namespace WiFIMap.ViewModels
             }
         }
 
-        public ICommand Click => new Command<MouseButtonEventArgs>(OnClick);
+        public ICommand Click => new Command<MouseButtonEventArgs>((e) => OnClick(e));
 
-        private void OnClick(MouseButtonEventArgs e)
+        private async Task OnClick(MouseButtonEventArgs e)
         {
             var inputElement = e.Source as IInputElement;
             var position = e.GetPosition(inputElement);
-            var bssInfo = _networkInfo.GetBssInfo();
+            var bssInfo = await _networkInfo.GetBssInfo();
             Items.Add(new ScanPoint(position.X, position.Y, bssInfo));
             IsModified = true;
         }

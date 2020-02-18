@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.ComponentModel;
 using System.Linq;
 using System.Text;
 using System.Threading;
@@ -23,7 +24,8 @@ namespace WiFIMap.ViewModels
         private ObservableCollection<ScanPoint> _items;
         private Project _project;
         private TaskCompletionSource<IProject> _taskCompletionSource;
-        private ObservableCollection<string> _networks;
+        private ObservableCollection<NetworkVm> _networks;
+        private bool _isModified;
 
         public ImageSource Image
         {
@@ -52,7 +54,7 @@ namespace WiFIMap.ViewModels
             }
         }
 
-        public ObservableCollection<string> Networks
+        public ObservableCollection<NetworkVm> Networks
         {
             get => _networks;
             private set
@@ -108,21 +110,36 @@ namespace WiFIMap.ViewModels
             }
         }
 
-        public Task Show(Project project, CancellationToken cancellationToken)
+        public Task Show(Project project, bool isModified, CancellationToken cancellationToken)
         {
             _project = project;
+            IsModified = isModified;
 
             Image = ImageCoder.ByteToImage(_project.Bitmap);
             Items = new ObservableCollection<ScanPoint>(_project.Items);
 
-            Networks = new ObservableCollection<string>(Items.SelectMany(point => point.BssInfo)
-                .Select(entity => $"{entity.Ssid}({entity.Mac})").Distinct());
+
+            var groupBy = Items.SelectMany(point => point.BssInfo).GroupBy(info => info.Ssid);
+
+            var networkVms = groupBy.Select(gr => new NetworkVm(gr.Key, gr.Select(entity => entity.Mac).Distinct()))
+                .ToArray();
+            
+            foreach (var networkVm in networkVms)
+            {
+                networkVm.PropertyChanged += NetworkVmOnPropertyChanged;
+            }
+
+            Networks = new ObservableCollection<NetworkVm>(networkVms);
 
             cancellationToken.Register(Cancellation);
 
             _taskCompletionSource = new TaskCompletionSource<IProject>(cancellationToken);
-            //_taskCompletionSource.SetResult(_project);
             return _taskCompletionSource.Task;
+        }
+
+        private void NetworkVmOnPropertyChanged(object sender, PropertyChangedEventArgs e)
+        {
+            //throw new NotImplementedException();
         }
 
         private void Cancellation()
@@ -132,13 +149,19 @@ namespace WiFIMap.ViewModels
 
         public bool IsModified
         {
-            get => false;
+            get => _isModified;
+            set
+            {
+                _isModified = value;
+                OnPropertyChanged(nameof(IsModified));
+            }
         }
 
         public void Save(string fileName)
         {
             _project.Items = new List<ScanPoint>(Items);
             _project.Save(fileName);
+            IsModified = false;
         }
     }
 }

@@ -75,6 +75,7 @@
     <Compile Include="Interfaces\IProjectContainer.cs" />
     <Compile Include="ViewModels\IProjectContainerVm.cs" />
     <Compile Include="ViewModels\MainVm.cs" />
+    <Compile Include="ViewModels\NetworkVm.cs" />
     <Compile Include="ViewModels\ResultVm.cs" />
     <Compile Include="ViewModels\ScanPoint.cs" />
     <Compile Include="ViewModels\ScanVm.cs" />

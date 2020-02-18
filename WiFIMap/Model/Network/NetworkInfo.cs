@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using NativeWifi;
 using WiFIMap.Interfaces;
 using WiFIMap.Model.Network.Wrappers;
@@ -61,19 +62,28 @@ namespace WiFIMap.Model.Network
                    wlanInterfaceInterfaceDescription ?? wlanInterfaceInterfaceGuid.ToString();
         }
 
-        public IEnumerable<IEntity> GetBssInfo()
+        public async Task<IEnumerable<IEntity>> GetBssInfo()
         {
-            return _wlanClient.Interfaces.SelectMany(wlanInterface =>
+            var tasks = _wlanClient.Interfaces.Select(async wlanInterface =>
             {
+                wlanInterface.Scan();
+                await Task.Delay(TimeSpan.FromSeconds(3));
                 var networkBssList = wlanInterface.GetNetworkBssList();
                 return networkBssList.Select(entry => new BssEntity(entry));
             });
+            var bssEntities = await Task.WhenAll(tasks);
+            return bssEntities.SelectMany(items => items);
         }
 
-        public IEnumerable<IEntity> GetBssInfo(string interfaceName)
+        public async Task<IEnumerable<IEntity>> GetBssInfo(string interfaceName)
         {
             var selectedInterface =
                 _wlanClient.Interfaces.Single(wlanInterface => GetInterfaceId(wlanInterface) == interfaceName);
+
+            selectedInterface.Scan();
+
+            await Task.Delay(TimeSpan.FromSeconds(3));
+
 
             var networkBssList = selectedInterface.GetNetworkBssList();
             return networkBssList.Select(entry => new BssEntity(entry));

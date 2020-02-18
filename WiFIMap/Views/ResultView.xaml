@@ -5,8 +5,20 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:WiFIMap.Views" 
              xmlns:b="http://schemas.microsoft.com/xaml/behaviors"
+             xmlns:viewModels="clr-namespace:WiFIMap.ViewModels"
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800" d:DataContext="{d:DesignData viewModels:ResultVm}">
+
+    <UserControl.Resources>
+        <HierarchicalDataTemplate x:Key="CheckBoxItemTemplate" ItemsSource="{Binding Children, Mode=OneTime}" DataType="viewModels:NetworkVm">
+            <StackPanel Orientation="Horizontal">
+                <!-- These elements are bound to a FooViewModel object. -->
+                <CheckBox Focusable="False"  IsChecked="{Binding IsChecked}" VerticalAlignment="Center"/>
+                <ContentPresenter Content="{Binding Name, Mode=OneTime}" Margin="2,0"/>
+            </StackPanel>
+        </HierarchicalDataTemplate>
+    </UserControl.Resources>
+
     <DockPanel VerticalAlignment="Stretch">
 
         <DockPanel DockPanel.Dock="Top" HorizontalAlignment="Stretch" >
@@ -16,7 +28,8 @@
 
         </DockPanel>
 
-        <ListBox DockPanel.Dock="Left" ItemsSource="{Binding Networks}"/>
+        <TreeView DockPanel.Dock="Left" ItemsSource="{Binding Networks, Mode=OneTime}" ItemTemplate="{StaticResource CheckBoxItemTemplate}" />
+        <!--<ListBox DockPanel.Dock="Left" ItemsSource="{Binding Networks}"/>-->
         <ScrollViewer HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto" CanContentScroll="True">
             
             <Grid>

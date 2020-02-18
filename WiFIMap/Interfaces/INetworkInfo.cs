@@ -1,11 +1,12 @@
 ﻿using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace WiFIMap.Interfaces
 {
     public interface INetworkInfo
     {
-        IEnumerable<IEntity> GetBssInfo();
-        IEnumerable<IEntity> GetBssInfo(string interfaceName);
+        Task<IEnumerable<IEntity>> GetBssInfo();
+        Task<IEnumerable<IEntity>> GetBssInfo(string interfaceName);
         IEnumerable<string> GetInterfaces();
     }
 }

@@ -52,24 +52,25 @@ namespace WiFIMap.ViewModels
 
         private async Task StartFlow(Project project)
         {
-            await StartScan(project);
-            await StartShow(project);
+            var isModified = await StartScan(project);
+            await StartShow(project, isModified);
         }
 
-        private async Task StartShow(Project project)
+        private async Task StartShow(Project project, bool isModified)
         {
             _cancellationTokenSource = new CancellationTokenSource();
             var currentPageViewModel = new ResultVm();
             CurrentPageViewModel = currentPageViewModel;
-            await currentPageViewModel.Show(project, _cancellationTokenSource.Token);
+            await currentPageViewModel.Show(project, isModified, _cancellationTokenSource.Token);
         }
 
-        private async Task StartScan(Project project)
+        private async Task<bool> StartScan(Project project)
         {
             _cancellationTokenSource = new CancellationTokenSource();
             var currentPageViewModel = new ScanVm();
             CurrentPageViewModel = currentPageViewModel;
             await currentPageViewModel.Scan(project, _cancellationTokenSource.Token);
+            return currentPageViewModel.IsModified;
         }
 
         public void OnLoadProject(object param)
