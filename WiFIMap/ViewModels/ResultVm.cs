@@ -9,6 +9,7 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
 using System.Windows.Media;
+using WiFIMap.HeatMap;
 using WiFIMap.Interfaces;
 using WiFIMap.Model;
 using WiFIMap.Model.Network;
@@ -26,6 +27,7 @@ namespace WiFIMap.ViewModels
         private TaskCompletionSource<IProject> _taskCompletionSource;
         private ObservableCollection<NetworkVm> _networks;
         private bool _isModified;
+        private ObservableCollection<HeatPoint> _points;
 
         public ImageSource Image
         {
@@ -134,12 +136,44 @@ namespace WiFIMap.ViewModels
             cancellationToken.Register(Cancellation);
 
             _taskCompletionSource = new TaskCompletionSource<IProject>(cancellationToken);
+
+            UpdateHeatMap();
+
             return _taskCompletionSource.Task;
         }
 
         private void NetworkVmOnPropertyChanged(object sender, PropertyChangedEventArgs e)
         {
-            //throw new NotImplementedException();
+            UpdateHeatMap();
+        }
+
+        private void UpdateHeatMap()
+        {
+            var heatPoints = new List<HeatPoint>{
+                new HeatPoint(20,20, 200),
+                new HeatPoint(40,40, 200)};
+
+            var macs = Networks.SelectMany(vm => vm.Children.Select(i => i.Name)).ToHashSet();
+            foreach (var scanPoint in Items)
+            {
+                var entities = scanPoint.BssInfo.Where(info => macs.Contains(info.Mac)).ToArray();
+                if (entities.Length > 0)
+                {
+                    var max = entities.Max(i => i.Rssi);
+                    heatPoints.Add( new HeatPoint(scanPoint.Left, scanPoint.Top, (byte)Math.Abs(max)));
+                }
+            }
+            Points = new ObservableCollection<HeatPoint>(heatPoints);
+        }
+
+        public ObservableCollection<HeatPoint> Points
+        {
+            get => _points;
+            set
+            {
+                _points = value;
+                OnPropertyChanged(nameof(Points));
+            }
         }
 
         private void Cancellation()

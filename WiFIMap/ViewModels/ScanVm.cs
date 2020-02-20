@@ -45,8 +45,11 @@ namespace WiFIMap.ViewModels
         {
             var inputElement = e.Source as IInputElement;
             var position = e.GetPosition(inputElement);
+            //var scanPoint = new ScanPoint(position.X, position.Y);
+            //Items.Add(scanPoint);
             var bssInfo = await _networkInfo.GetBssInfo();
-            Items.Add(new ScanPoint(position.X, position.Y, bssInfo));
+            //scanPoint.BssInfo = bssInfo;
+            Items.Add(new ScanPoint((int)position.X, (int)position.Y, bssInfo));
             IsModified = true;
         }
 

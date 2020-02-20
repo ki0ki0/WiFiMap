@@ -64,6 +64,8 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="HeatMap\HeatMap.cs" />
+    <Compile Include="HeatMap\HeatPoint.cs" />
     <Compile Include="Interfaces\IProject.cs" />
     <Compile Include="Model\Project.cs" />
     <Compile Include="Model\ImageCoder.cs" />

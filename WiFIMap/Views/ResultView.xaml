@@ -6,6 +6,7 @@
              xmlns:local="clr-namespace:WiFIMap.Views" 
              xmlns:b="http://schemas.microsoft.com/xaml/behaviors"
              xmlns:viewModels="clr-namespace:WiFIMap.ViewModels"
+             xmlns:heatMap="clr-namespace:WiFIMap.HeatMap"
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800" d:DataContext="{d:DesignData viewModels:ResultVm}">
 
@@ -57,28 +58,7 @@
                     </b:Interaction.Triggers>
                 </Image>
 
-                <ItemsControl ItemsSource="{Binding Items}">
-                    <ItemsControl.ItemsPanel>
-                        <ItemsPanelTemplate>
-                            <Canvas />
-                        </ItemsPanelTemplate>
-                    </ItemsControl.ItemsPanel>
-                    <ItemsControl.ItemContainerStyle>
-                        <Style TargetType="ContentPresenter">
-                            <Setter Property="Canvas.Top" Value="{Binding Top}" />
-                            <Setter Property="Canvas.Left" Value="{Binding Left}" />
-                        </Style>
-                    </ItemsControl.ItemContainerStyle>
-                    <ItemsControl.ItemTemplate>
-                        <DataTemplate>
-                            <Ellipse Width="10" Height="10" Fill="Aqua">
-                                <Ellipse.RenderTransform>
-                                    <TranslateTransform X="-5" Y="-5" />
-                                </Ellipse.RenderTransform>
-                            </Ellipse>
-                        </DataTemplate>
-                    </ItemsControl.ItemTemplate>
-                </ItemsControl>
+                <heatMap:HeatMap PointsSource="{Binding Points}" HorizontalAlignment="Left" VerticalAlignment="Top"/>
             </Grid>
         </ScrollViewer>
     </DockPanel>
