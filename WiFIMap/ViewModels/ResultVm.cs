@@ -149,9 +149,7 @@ namespace WiFIMap.ViewModels
 
         private void UpdateHeatMap()
         {
-            var heatPoints = new List<HeatPoint>{
-                new HeatPoint(20,20, 200),
-                new HeatPoint(40,40, 200)};
+            var heatPoints = new List<HeatPoint>();
 
             var macs = Networks.SelectMany(vm => vm.Children.Select(i => i.Name)).ToHashSet();
             foreach (var scanPoint in Items)
@@ -160,7 +158,7 @@ namespace WiFIMap.ViewModels
                 if (entities.Length > 0)
                 {
                     var max = entities.Max(i => i.Rssi);
-                    heatPoints.Add( new HeatPoint(scanPoint.Left, scanPoint.Top, (byte)Math.Abs(max)));
+                    heatPoints.Add( new HeatPoint(scanPoint.Left, scanPoint.Top, (byte)(max+255)));
                 }
             }
             Points = new ObservableCollection<HeatPoint>(heatPoints);

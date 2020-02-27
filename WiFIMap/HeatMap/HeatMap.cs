@@ -21,7 +21,7 @@ namespace WiFIMap.HeatMap
 
 			for (int i = 0; i < _brushes.Length; i++)
 			{
-				_brushes[i] = new RadialGradientBrush(Color.FromArgb((byte)i, 255, 255, 255), Color.FromArgb(0, 255, 255, 255));
+				_brushes[i] = new RadialGradientBrush(Color.FromArgb(100, 0, 255, 0), Color.FromArgb(0, 255, 0, 0));
 			}
 		}
 
@@ -84,7 +84,7 @@ namespace WiFIMap.HeatMap
 				{
 					foreach (HeatPoint point in heatPoints)
 					{
-						var widthHeight = (double)point.Intensity / 5;
+						var widthHeight = (double)point.Intensity;
 
 						dc.DrawRectangle(_brushes[point.Intensity], null, new Rect(point.X - widthHeight / 2, point.Y - widthHeight / 2, widthHeight, widthHeight));
 					}
