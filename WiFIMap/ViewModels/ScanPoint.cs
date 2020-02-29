@@ -21,6 +21,10 @@ namespace WiFIMap.ViewModels
             Top = top;
         }
 
+        public ScanPoint()
+        {
+        }
+
         public int Left { get; set; }
         public int Top { get; set; }
         public IEnumerable<IEntity> BssInfo { get; set; }

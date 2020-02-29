@@ -11,12 +11,12 @@ namespace WiFIMap.Model.Network
         {
         }
 
-        public string Ssid { get; }
-        public string Mac { get; }
-        public int Rssi { get; }
-        public uint LinkQuality { get; }
-        public uint Channel { get; }
-        public uint ChCenterFrequency { get; }
+        public string Ssid { get; set; }
+        public string Mac { get; set; }
+        public int Rssi { get; set; }
+        public uint LinkQuality { get; set; }
+        public uint Channel { get; set; }
+        public uint ChCenterFrequency { get; set; }
 
         public BssEntity(Wlan.WlanBssEntry wlanBssEntry)
         {
