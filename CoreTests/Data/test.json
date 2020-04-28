@@ -1,0 +1,30 @@
+{
+  "$type": "WiFiMapCore.Model.Project.Project, WiFiMapCore",
+  "ScanPoints": {
+    "$type": "System.Collections.Generic.List`1[[WiFiMapCore.Interfaces.Project.IScanPoint, WiFiMapCore]], System.Private.CoreLib",
+    "$values": [
+      {
+        "$type": "WiFiMapCore.Model.Project.ScanPoint, WiFiMapCore",
+        "BssInfo": {
+          "$type": "System.Collections.Generic.List`1[[WiFiMapCore.Interfaces.Network.INetworkInfo, WiFiMapCore]], System.Private.CoreLib",
+          "$values": [
+            {
+              "$type": "WiFiMapCore.Model.Network.NetworkInfo, WiFiMapCore",
+              "Ssid": "6",
+              "Mac": "4",
+              "Rssi": 5,
+              "LinkQuality": 3,
+              "Channel": 2,
+              "ChCenterFrequency": 1
+            }
+          ]
+        },
+        "Position": "7, 8"
+      }
+    ]
+  },
+  "Bitmap": {
+    "$type": "System.Byte[], System.Private.CoreLib",
+    "$value": "CQoL"
+  }
+}
