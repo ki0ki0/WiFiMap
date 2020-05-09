@@ -24,9 +24,8 @@
                 <Rectangle Width="256" Height="1">
                     <Rectangle.Fill>
                         <LinearGradientBrush StartPoint="0,0" EndPoint="1,0">
-                            <GradientStop Color="#00000000" Offset="0.00000" />
-                            <GradientStop Color="#a0Ff0000" Offset="0.1" />
-                            <GradientStop Color="#a000FF00" Offset="0.99999" />
+                            <GradientStop Color="#0000ff00" Offset="0.0" />
+                            <GradientStop Color="#c000ff00" Offset="1.0" />
                         </LinearGradientBrush>
                     </Rectangle.Fill>
                 </Rectangle>
@@ -35,7 +34,6 @@
     </UserControl.Resources>
 
     <DockPanel VerticalAlignment="Stretch">
-
         <DockPanel DockPanel.Dock="Top" HorizontalAlignment="Stretch">
             <Label VerticalAlignment="Center">Zoom:</Label>
             <Slider VerticalAlignment="Center" Minimum="{Binding ScaleFactorMin}" Maximum="{Binding ScaleFactorMax}"
@@ -58,6 +56,7 @@
                 </Grid.LayoutTransform>
 
                 <Grid HorizontalAlignment="Center" VerticalAlignment="Center">
+
                     <Image Source="{Binding Image}" Stretch="None" HorizontalAlignment="Left" VerticalAlignment="Top">
                         <b:Interaction.Triggers>
                             <b:EventTrigger EventName="MouseUp">
@@ -65,25 +64,6 @@
                             </b:EventTrigger>
                         </b:Interaction.Triggers>
                     </Image>
-
-                    <ItemsControl ItemsSource="{Binding Points}">
-                        <ItemsControl.ItemsPanel>
-                            <ItemsPanelTemplate>
-                                <Canvas />
-                            </ItemsPanelTemplate>
-                        </ItemsControl.ItemsPanel>
-                        <ItemsControl.ItemContainerStyle>
-                            <Style TargetType="ContentPresenter">
-                                <Setter Property="Canvas.Top" Value="{Binding Top}" />
-                                <Setter Property="Canvas.Left" Value="{Binding Left}" />
-                            </Style>
-                        </ItemsControl.ItemContainerStyle>
-                        <ItemsControl.ItemTemplate>
-                            <DataTemplate>
-                                <Ellipse Width="10" Height="10" Fill="Aqua" Margin="-5,-5,0,0" />
-                            </DataTemplate>
-                        </ItemsControl.ItemTemplate>
-                    </ItemsControl>
 
                     <heatMap:HeatMap PointsSource="{Binding Points}" HorizontalAlignment="Left" VerticalAlignment="Top">
                         <heatMap:HeatMap.Effect>

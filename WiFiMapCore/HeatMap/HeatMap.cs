@@ -33,7 +33,8 @@ namespace WiFiMapCore.HeatMap
             _brushes = new RadialGradientBrush[GradientNumber];
 
             for (var i = 0; i < _brushes.Length; i++)
-                _brushes[i] = new RadialGradientBrush(Color.FromArgb(100, 0, 255, 0), Color.FromArgb(0, 255, 0, 0));
+                _brushes[i] = new RadialGradientBrush(Color.FromArgb((byte) i, 255, 255, 255),
+                    Color.FromArgb(0, 255, 255, 255));
         }
 
 
