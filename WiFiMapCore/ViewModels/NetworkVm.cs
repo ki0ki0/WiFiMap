@@ -2,6 +2,8 @@
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Linq;
+using WiFiMapCore.Interfaces.Network;
+using WiFiMapCore.Model.Network;
 
 namespace WiFiMapCore.ViewModels
 {
@@ -11,16 +13,20 @@ namespace WiFiMapCore.ViewModels
         private bool _ignoreChildren;
         private bool? _isChecked = true;
         private string _name = "";
+        private INetworkInfo _info;
+        public string Mac => _info.Mac;
 
-        public NetworkVm(string name)
+        public NetworkVm(INetworkInfo info)
         {
-            Name = name;
+            _info = info;
+            Name = $"{info.Mac}({info.Channel})";
             _children = new ObservableCollection<NetworkVm>();
         }
 
-        public NetworkVm(string name, IEnumerable<string> macs)
+        public NetworkVm(string name, IEnumerable<INetworkInfo> macs)
         {
             Name = name;
+            _info = new NetworkInfo();
             _children = new ObservableCollection<NetworkVm>(macs.Select(mac => new NetworkVm(mac)));
             foreach (var networkVm in _children) networkVm.PropertyChanged += NetworkVmOnPropertyChanged;
         }

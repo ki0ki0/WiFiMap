@@ -9,6 +9,7 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using WiFiMapCore.HeatMap;
+using WiFiMapCore.Interfaces.Network;
 using WiFiMapCore.Interfaces.Project;
 using WiFiMapCore.Model;
 using WiFiMapCore.Model.Network;
@@ -156,7 +157,8 @@ namespace WiFiMapCore.ViewModels
 
             var networkVms = groupBy.Select(gr =>
                 {
-                    var macs = gr.Select(entity => entity.Mac).Distinct();
+                    var macEqualityComparer = new MacEqualityComparer();
+                    var macs = gr.Distinct(macEqualityComparer);
                     return new NetworkVm(gr.Key, macs);
                 })
                 .ToArray();
@@ -181,7 +183,7 @@ namespace WiFiMapCore.ViewModels
             {
                 return vm.Children
                     .Where(networkVm => networkVm.IsChecked != false)
-                    .Select(i => i.Name);
+                    .Select(i => i.Mac);
             }).ToHashSet();
             
             foreach (var scanPoint in Items)
