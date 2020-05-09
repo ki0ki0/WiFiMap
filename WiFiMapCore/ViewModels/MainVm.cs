@@ -9,11 +9,21 @@ using WiFiMapCore.Interfaces;
 using WiFiMapCore.Model;
 using WiFiMapCore.Model.Project;
 using WiFiMapCore.Model.Storage;
+using WiFiMapCore.Views;
 
 namespace WiFiMapCore.ViewModels
 {
     public class MainVm : BaseVm
     {
+        public MainVm()
+        {
+            var commandLineArgs = Environment.GetCommandLineArgs();
+            if (commandLineArgs.Length == 2)
+            {
+                var load = Load(commandLineArgs[1]);
+            }
+        }
+
         public ICommand NewProject => new BasicCommand(OnNewProject);
         public ICommand LoadProject => new BasicCommand(OnLoadProject);
         public ICommand SaveProject => new BasicCommand(OnSaveProject, SaveProjectCanExecute);
@@ -22,15 +32,15 @@ namespace WiFiMapCore.ViewModels
 
         public ICommand Close => new Command<CancelEventArgs>(OnClose);
 
+
+        public ICommand Diagnostics => new Command<CancelEventArgs>(OnDiagnostics);
+
         public ProjectVm ProjectVm { get; } = new ProjectVm();
 
-        public MainVm()
+        private void OnDiagnostics(CancelEventArgs obj)
         {
-            var commandLineArgs = Environment.GetCommandLineArgs();
-            if (commandLineArgs.Length == 2)
-            {
-                var load = Load(commandLineArgs[1]);
-            }
+            var diagnosticsView = new DiagnosticsView();
+            diagnosticsView.Show();
         }
 
         public void OnNewProject(object param)
@@ -94,9 +104,7 @@ namespace WiFiMapCore.ViewModels
             if (ProjectVm?.IsModified == true)
                 if (MessageBox.Show("Exit without saving?", "Exit", MessageBoxButton.YesNoCancel) !=
                     MessageBoxResult.Yes)
-                {
                     e.Cancel = true;
-                }
 
             //_task.Wait();
         }

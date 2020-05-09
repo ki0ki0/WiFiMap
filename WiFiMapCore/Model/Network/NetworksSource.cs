@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using System.Threading.Tasks;
 using WiFiMapCore.Interfaces.Network;
@@ -28,16 +29,29 @@ namespace WiFiMapCore.Model.Network
             return networkInterfaces.ToAsyncEnumerable();
         }
 
+        public async Task ForceUpdate()
+        {
+            await Task.FromResult<object?>(null);
+            foreach (var wlanInterface in _wlanClient.Interfaces)
+            {
+                wlanInterface.Scan();
+            }
+        }
+        public async Task ForceUpdate(IWifiInterface @interface)
+        {
+            await Task.FromResult<object?>(null);
+            var selectedInterface =
+                _wlanClient.Interfaces.Single(wlanInterface => GetInterfaceId(wlanInterface) == @interface.Name);
+
+            selectedInterface.Scan();
+        }
+
         public async IAsyncEnumerable<INetworkInfo> ReadNetworks(IWifiInterface @interface)
         {
             var selectedInterface =
                 _wlanClient.Interfaces.Single(wlanInterface => GetInterfaceId(wlanInterface) == @interface.Name);
 
-            selectedInterface.Scan();
-
-            await Task.Delay(TimeSpan.FromSeconds(3));
-
-
+            await Task.FromResult<object?>(null);
             var networkBssList = selectedInterface.GetNetworkBssList();
             foreach (var entry in networkBssList) yield return new NetworkInfo(entry);
         }
@@ -82,8 +96,7 @@ namespace WiFiMapCore.Model.Network
         {
             foreach (var wlanInterface in _wlanClient.Interfaces)
             {
-                wlanInterface.Scan();
-                await Task.Delay(TimeSpan.FromSeconds(3));
+                await Task.FromResult<object?>(null);
                 var networkBssList = wlanInterface.GetNetworkBssList();
 
                 foreach (var entry in networkBssList) yield return new NetworkInfo(entry);

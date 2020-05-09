@@ -5,6 +5,7 @@ using System.ComponentModel;
 using System.Diagnostics;
 using System.Linq;
 using System.Threading;
+using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
 using System.Windows.Media;
@@ -163,6 +164,8 @@ namespace WiFiMapCore.ViewModels
         {
             var inputElement = e.Source as IInputElement;
             var position = e.GetPosition(inputElement);
+            await _networksSource.ForceUpdate();
+            await Task.Delay(TimeSpan.FromSeconds(5));
             var bssInfo = await _networksSource.ReadNetworks().ToListAsync();
             var scanPoint = new ScanPoint((int) position.X, (int) position.Y, bssInfo);
             Items.Add(scanPoint);

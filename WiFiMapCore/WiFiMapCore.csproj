@@ -40,6 +40,9 @@
     <Compile Update="Views\ScanView.xaml.cs">
       <DependentUpon>ScanView.xaml</DependentUpon>
     </Compile>
+    <Compile Update="Views\DiagnosticsView.xaml.cs">
+      <DependentUpon>Diagnostics.xaml</DependentUpon>
+    </Compile>
   </ItemGroup>
 
   <ItemGroup>
@@ -51,6 +54,9 @@
     </Page>
     <Page Update="Views\ScanView.xaml">
       <SubType>Designer</SubType>
+    </Page>
+    <Page Update="Views\DiagnosticsView.xaml">
+      <Generator></Generator>
     </Page>
   </ItemGroup>
 

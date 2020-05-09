@@ -34,9 +34,10 @@
                 <Separator />
                 <MenuItem Header="E_xit" Command="{Binding Exit}" />
             </MenuItem>
-            <!--<MenuItem Header="_Tools">
-                <MenuItem x:Name="Options" Header="_Options"/>
-            </MenuItem>-->
+            <MenuItem Header="_Tools">
+                <MenuItem Header="_Diagnostics" Command="{Binding Diagnostics}" />
+                <!-- <MenuItem x:Name="Options" Header="_Options"/> -->
+            </MenuItem>
         </Menu>
 
         <views:ResultView DataContext="{Binding ProjectVm}" />
