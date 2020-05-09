@@ -57,7 +57,9 @@
         <TreeView DockPanel.Dock="Left" ItemsSource="{Binding Networks}"
                   ItemTemplate="{StaticResource CheckBoxItemTemplate}" />
         <ListView x:Name='lv' DockPanel.Dock="Right" ItemsSource="{Binding Details}"
-                  GridViewColumnHeader.Click="GridViewColumnHeaderClickedHandler">
+                  GridViewColumnHeader.Click="GridViewColumnHeaderClickedHandler" 
+                  SourceUpdated="lv_SourceUpdated"
+                  >
             <ListView.View>
                 <GridView AllowsColumnReorder="True">
                     <GridViewColumn Header="SSID" DisplayMemberBinding="{Binding Ssid}" />

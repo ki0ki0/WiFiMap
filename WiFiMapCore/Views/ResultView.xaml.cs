@@ -44,33 +44,39 @@ namespace WiFiMapCore.Views
                         }
                     }
 
-                    var columnBinding = headerClicked.Column.DisplayMemberBinding as Binding;
-                    var sortBy = columnBinding?.Path.Path ?? headerClicked.Column.Header as string;
-
-                    Sort(sortBy, direction);
-
-                    if (direction == ListSortDirection.Ascending)
-                    {
-                        headerClicked.Column.HeaderTemplate =
-                            Resources["HeaderTemplateArrowUp"] as DataTemplate;
-                    }
-                    else
-                    {
-                        headerClicked.Column.HeaderTemplate =
-                            Resources["HeaderTemplateArrowDown"] as DataTemplate;
-                    }
-
-                    // Remove arrow from previously sorted header
-                    if (_lastHeaderClicked != null && _lastHeaderClicked != headerClicked)
-                    {
-                        _lastHeaderClicked.Column.HeaderTemplate = null;
-                    }
-
-                    _lastHeaderClicked = headerClicked;
-                    _lastDirection = direction;
+                    SortByHeader(headerClicked, direction);
                 }
             }
         }
+
+        private void SortByHeader(GridViewColumnHeader headerClicked, ListSortDirection direction)
+        {
+            var columnBinding = headerClicked.Column.DisplayMemberBinding as Binding;
+            var sortBy = columnBinding?.Path.Path ?? headerClicked.Column.Header as string;
+
+            Sort(sortBy, direction);
+
+            if (direction == ListSortDirection.Ascending)
+            {
+                headerClicked.Column.HeaderTemplate =
+                    Resources["HeaderTemplateArrowUp"] as DataTemplate;
+            }
+            else
+            {
+                headerClicked.Column.HeaderTemplate =
+                    Resources["HeaderTemplateArrowDown"] as DataTemplate;
+            }
+
+            // Remove arrow from previously sorted header
+            if (_lastHeaderClicked != null && _lastHeaderClicked != headerClicked)
+            {
+                _lastHeaderClicked.Column.HeaderTemplate = null;
+            }
+
+            _lastHeaderClicked = headerClicked;
+            _lastDirection = direction;
+        }
+
         private void Sort(string? sortBy, ListSortDirection direction)
         {
             ICollectionView dataView =
@@ -80,6 +86,14 @@ namespace WiFiMapCore.Views
             SortDescription sd = new SortDescription(sortBy, direction);
             dataView.SortDescriptions.Add(sd);
             dataView.Refresh();
+        }
+
+        private void lv_SourceUpdated(object sender, DataTransferEventArgs e)
+        {
+            if (_lastHeaderClicked != null)
+            {
+                SortByHeader(_lastHeaderClicked, _lastDirection);
+            }
         }
     }
 }

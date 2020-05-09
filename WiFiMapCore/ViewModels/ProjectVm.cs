@@ -66,7 +66,12 @@ namespace WiFiMapCore.ViewModels
             if (firstOrDefault != null)
             {
                 var enumerable = firstOrDefault.BssInfo.Select(info => info.Mac);
-                Details = new ObservableCollection<INetworkInfo>(firstOrDefault.BssInfo);
+                Details.Clear();
+                foreach (var VARIABLE in firstOrDefault.BssInfo)
+                {
+                    Details.Add(VARIABLE);
+                }
+                //Details = new ObservableCollection<INetworkInfo>(firstOrDefault.BssInfo);
             }
         }
 
