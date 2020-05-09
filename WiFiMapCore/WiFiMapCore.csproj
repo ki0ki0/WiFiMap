@@ -1,0 +1,63 @@
+﻿<Project Sdk="Microsoft.NET.Sdk.WindowsDesktop">
+
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>netcoreapp3.1</TargetFramework>
+    <UseWPF>true</UseWPF>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <None Remove="Views\Effects\HeatColorizer.fx" />
+    <None Remove="Views\Effects\HeatColorizer.ps" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Include="Views\Effects\HeatColorizer.fx" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.Xaml.Behaviors.Wpf" Version="1.1.19" />
+    <PackageReference Include="Newtonsoft.Json" Version="12.0.3" />
+    <PackageReference Include="System.Linq.Async" Version="4.1.1" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Resource Include="Views\Effects\HeatColorizer.ps" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Update="Views\BlankView.xaml.cs">
+      <DependentUpon>BlankView.xaml</DependentUpon>
+    </Compile>
+    <Compile Update="Views\ResultView.xaml.cs">
+      <DependentUpon>ResultView.xaml</DependentUpon>
+    </Compile>
+    <Compile Update="Views\ScanView.xaml.cs">
+      <DependentUpon>ScanView.xaml</DependentUpon>
+    </Compile>
+    <Compile Update="Views\DiagnosticsView.xaml.cs">
+      <DependentUpon>Diagnostics.xaml</DependentUpon>
+    </Compile>
+  </ItemGroup>
+
+  <ItemGroup>
+    <Page Update="Views\BlankView.xaml">
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Update="Views\ResultView.xaml">
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Update="Views\ScanView.xaml">
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Update="Views\DiagnosticsView.xaml">
+      <Generator></Generator>
+    </Page>
+  </ItemGroup>
+
+</Project>
