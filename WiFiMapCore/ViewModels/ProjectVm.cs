@@ -1,9 +1,10 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
+using System.Diagnostics;
 using System.Linq;
 using System.Threading;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
 using System.Windows.Media;
@@ -25,12 +26,11 @@ namespace WiFiMapCore.ViewModels
         private ObservableCollection<NetworkVm> _networks = new ObservableCollection<NetworkVm>();
         private readonly NetworksSource _networksSource = new NetworksSource();
         private ObservableCollection<HeatPoint> _points = new ObservableCollection<HeatPoint>();
+        private ObservableCollection<INetworkInfo> _details = new ObservableCollection<INetworkInfo>();
         private Project _project = new Project();
         private double _scaleFactor = 1;
         private double _scaleFactorMax = 10;
         private double _scaleFactorMin = 0.1;
-
-        private TaskCompletionSource<IProject> _taskCompletionSource = new TaskCompletionSource<IProject>();
 
         public Project Project
         {
@@ -55,6 +55,20 @@ namespace WiFiMapCore.ViewModels
         }
 
         public ICommand Click => new Command<MouseButtonEventArgs>(OnClick);
+        public ICommand Hover => new Command<MouseEventArgs>(OnHover);
+
+        private void OnHover(MouseEventArgs e)
+        {
+            var inputElement = e.Source as IInputElement;
+            var position = e.GetPosition(inputElement);
+            var min = Items.Min(point => Math.Abs(point.Position.X - (int)position.X) + Math.Abs(point.Position.Y - (int)position.Y));
+            var firstOrDefault = Items.FirstOrDefault(point => min == Math.Abs(point.Position.X - (int)position.X) + Math.Abs(point.Position.Y - (int)position.Y));
+            if (firstOrDefault != null)
+            {
+                var enumerable = firstOrDefault.BssInfo.Select(info => info.Mac);
+                Details = new ObservableCollection<INetworkInfo>(firstOrDefault.BssInfo);
+            }
+        }
 
         public ObservableCollection<IScanPoint> Items
         {
@@ -73,6 +87,16 @@ namespace WiFiMapCore.ViewModels
             {
                 _networks = value;
                 OnPropertyChanged(nameof(Networks));
+            }
+        }
+        
+        public ObservableCollection<INetworkInfo> Details
+        {
+            get => _details;
+            private set
+            {
+                _details = value;
+                OnPropertyChanged(nameof(Details));
             }
         }
 

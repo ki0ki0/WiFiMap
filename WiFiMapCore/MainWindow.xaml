@@ -7,7 +7,7 @@
         xmlns:viewModels="clr-namespace:WiFiMapCore.ViewModels"
         xmlns:b="http://schemas.microsoft.com/xaml/behaviors"
         mc:Ignorable="d"
-        Title="MainWindow" Height="450" Width="800">
+        Title="MainWindow" Height="600" Width="1000">
     <Window.Resources>
         <!--<DataTemplate DataType="{x:Type viewModels:ProjectVm}">
             <views:ResultView/>

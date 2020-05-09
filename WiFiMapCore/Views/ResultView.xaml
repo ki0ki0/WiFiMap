@@ -31,6 +31,20 @@
                 </Rectangle>
             </VisualBrush.Visual>
         </VisualBrush>
+        
+        <DataTemplate x:Key="HeaderTemplateArrowUp">
+            <DockPanel LastChildFill="True" Width="{Binding ActualWidth, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type GridViewColumnHeader}}}">
+                <Path x:Name="arrowUp" StrokeThickness="1" Fill="Gray" Data="M 5,10 L 15,10 L 10,5 L 5,10" DockPanel.Dock="Right" Width="20" HorizontalAlignment="Right" Margin="5,0,5,0" SnapsToDevicePixels="True"/>
+                <TextBlock Text="{Binding }" />
+            </DockPanel>
+        </DataTemplate>
+
+        <DataTemplate x:Key="HeaderTemplateArrowDown">
+            <DockPanel LastChildFill="True" Width="{Binding ActualWidth, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type GridViewColumnHeader}}}">
+                <Path x:Name="arrowDown" StrokeThickness="1" Fill="Gray"  Data="M 5,5 L 10,10 L 15,5 L 5,5" DockPanel.Dock="Right" Width="20" HorizontalAlignment="Right" Margin="5,0,5,0" SnapsToDevicePixels="True"/>
+                <TextBlock Text="{Binding }" />
+            </DockPanel>
+        </DataTemplate>
     </UserControl.Resources>
 
     <DockPanel VerticalAlignment="Stretch">
@@ -42,6 +56,18 @@
 
         <TreeView DockPanel.Dock="Left" ItemsSource="{Binding Networks}"
                   ItemTemplate="{StaticResource CheckBoxItemTemplate}" />
+        <ListView x:Name='lv' DockPanel.Dock="Right" ItemsSource="{Binding Details}"
+                  GridViewColumnHeader.Click="GridViewColumnHeaderClickedHandler">
+            <ListView.View>
+                <GridView AllowsColumnReorder="True">
+                    <GridViewColumn Header="SSID" DisplayMemberBinding="{Binding Ssid}" />
+                    <GridViewColumn Header="Mac" DisplayMemberBinding="{Binding Mac}" />
+                    <GridViewColumn Header="Channel" DisplayMemberBinding="{Binding Channel}" />
+                    <GridViewColumn Header="RSSI" DisplayMemberBinding="{Binding Rssi}" />
+                    <GridViewColumn Header="LinkQuality" DisplayMemberBinding="{Binding LinkQuality}" />
+                </GridView>
+            </ListView.View>
+        </ListView>
 
         <ScrollViewer HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto" CanContentScroll="True">
             <Grid Background="Transparent">
@@ -69,6 +95,11 @@
                         <heatMap:HeatMap.Effect>
                             <effects:HeatColorizer Palette="{StaticResource PaletteBrush}" />
                         </heatMap:HeatMap.Effect>
+                        <b:Interaction.Triggers>
+                            <b:EventTrigger EventName="MouseEnter">
+                                <b:InvokeCommandAction Command="{Binding Hover}" PassEventArgsToCommand="True" />
+                            </b:EventTrigger>
+                        </b:Interaction.Triggers>
                     </heatMap:HeatMap>
                 </Grid>
             </Grid>
