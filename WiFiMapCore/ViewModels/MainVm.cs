@@ -1,5 +1,6 @@
 ﻿using System;
 using System.ComponentModel;
+using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
 using System.Windows.Media.Imaging;
@@ -23,6 +24,14 @@ namespace WiFiMapCore.ViewModels
 
         public ProjectVm ProjectVm { get; } = new ProjectVm();
 
+        public MainVm()
+        {
+            var commandLineArgs = Environment.GetCommandLineArgs();
+            if (commandLineArgs.Length == 2)
+            {
+                var load = Load(commandLineArgs[1]);
+            }
+        }
 
         public void OnNewProject(object param)
         {
@@ -49,10 +58,16 @@ namespace WiFiMapCore.ViewModels
                                     "|All Files|*.*";
             if (openFileDialog.ShowDialog() == true)
             {
-                IStorage<Project> str = new JsonFileStorage<Project>(openFileDialog.FileName);
-                var project = await str.Load();
-                ProjectVm.Project = project;
+                var fileName = openFileDialog.FileName;
+                await Load(fileName);
             }
+        }
+
+        private async Task Load(string fileName)
+        {
+            IStorage<Project> str = new JsonFileStorage<Project>(fileName);
+            var project = await str.Load();
+            ProjectVm.Project = project;
         }
 
         private bool SaveProjectCanExecute(object arg)

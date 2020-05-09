@@ -9,7 +9,7 @@ namespace WiFiMapCore.ViewModels
     {
         private ObservableCollection<NetworkVm> _children;
         private bool _ignoreChildren;
-        private bool? _isChecked = false;
+        private bool? _isChecked = true;
         private string _name = "";
 
         public NetworkVm(string name)

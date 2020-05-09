@@ -154,7 +154,11 @@ namespace WiFiMapCore.ViewModels
         {
             var groupBy = Items.SelectMany(point => point.BssInfo).GroupBy(info => info.Ssid);
 
-            var networkVms = groupBy.Select(gr => new NetworkVm(gr.Key, gr.Select(entity => entity.Mac).Distinct()))
+            var networkVms = groupBy.Select(gr =>
+                {
+                    var macs = gr.Select(entity => entity.Mac).Distinct();
+                    return new NetworkVm(gr.Key, macs);
+                })
                 .ToArray();
 
             foreach (var networkVm in networkVms) networkVm.PropertyChanged += NetworkVmOnPropertyChanged;
@@ -173,14 +177,30 @@ namespace WiFiMapCore.ViewModels
         {
             var heatPoints = new List<HeatPoint>();
 
-            var macs = Networks.SelectMany(vm => vm.Children.Select(i => i.Name)).ToHashSet();
+            var macs = Networks.SelectMany(vm =>
+            {
+                return vm.Children
+                    .Where(networkVm => networkVm.IsChecked != false)
+                    .Select(i => i.Name);
+            }).ToHashSet();
+            
             foreach (var scanPoint in Items)
             {
                 var entities = scanPoint.BssInfo.Where(info => macs.Contains(info.Mac)).ToArray();
                 if (entities.Length > 0)
                 {
                     var max = entities.Max(i => i.Rssi);
-                    heatPoints.Add(new HeatPoint(scanPoint.Position.X, scanPoint.Position.Y, (byte) (max + 255)));
+                    max = max + 80;
+                    if (max < 0)
+                    {
+                        max = 0;
+                    }
+                    max = max * max / 4;
+                    if (max > 255)
+                    {
+                        max = 255;
+                    }
+                    heatPoints.Add(new HeatPoint(scanPoint.Position.X, scanPoint.Position.Y, (byte) (max)));
                 }
             }
 
