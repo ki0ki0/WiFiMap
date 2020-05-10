@@ -93,7 +93,7 @@
                         </b:Interaction.Triggers>
                     </Image>
 
-                    <heatMap:HeatMap PointsSource="{Binding Points}" HorizontalAlignment="Left" VerticalAlignment="Top">
+                        <heatMap:HeatMap PointsSource="{Binding HeatPoints}" HorizontalAlignment="Left" VerticalAlignment="Top">
                         <heatMap:HeatMap.Effect>
                             <effects:HeatColorizer Palette="{StaticResource PaletteBrush}" />
                         </heatMap:HeatMap.Effect>
