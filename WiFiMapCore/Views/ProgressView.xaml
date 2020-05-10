@@ -10,6 +10,43 @@
         <BooleanToVisibilityConverter x:Key="VisibleIfTrueConverter" />
     </UserControl.Resources>
     <Grid Background="#7f000000" Visibility="{Binding IsVisible, Converter={StaticResource VisibleIfTrueConverter}}">
-        <Button Content="Cancel" Command="{Binding Cancel}" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+        <Grid.RowDefinitions>
+            <RowDefinition/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition/>
+        </Grid.RowDefinitions>
+        <TextBlock Grid.Row="0" Foreground="White" FontSize="20" HorizontalAlignment="Center" VerticalAlignment="Center">Please wait...</TextBlock>
+        <Ellipse Grid.Row="1" Width="50" Height="50">
+            <Ellipse.Fill>
+                <LinearGradientBrush StartPoint="1,1" EndPoint="0,0" >
+                    <GradientStop Color="White" Offset="0"/>
+                    <GradientStop Color="CornflowerBlue" Offset="1"/>
+                </LinearGradientBrush>
+            </Ellipse.Fill>
+            <Ellipse.RenderTransform>
+                <RotateTransform CenterX="25" CenterY="25"/>
+            </Ellipse.RenderTransform>
+            <Ellipse.Style>
+                <Style TargetType="Ellipse">
+                    <Style.Triggers>
+                        <DataTrigger Binding="{Binding IsVisible}" Value="True">
+                            <DataTrigger.EnterActions>
+                                <BeginStoryboard x:Name="SpinStoryboard">
+                                    <Storyboard TargetProperty="RenderTransform.Angle" >
+                                        <DoubleAnimation
+                                            From="0" To="360" Duration="0:0:01"
+                                            RepeatBehavior="Forever" />
+                                    </Storyboard>
+                                </BeginStoryboard>
+                            </DataTrigger.EnterActions>
+                            <DataTrigger.ExitActions>
+                                <StopStoryboard BeginStoryboardName="SpinStoryboard"></StopStoryboard>
+                            </DataTrigger.ExitActions>
+                        </DataTrigger>
+                    </Style.Triggers>
+                </Style>
+            </Ellipse.Style>
+        </Ellipse>
+        <Button Grid.Row="2" Content="Cancel" Command="{Binding Cancel}" HorizontalAlignment="Center" VerticalAlignment="Center" Padding="10"/>
     </Grid>
 </UserControl>

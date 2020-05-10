@@ -1,21 +1,22 @@
 ﻿using System;
+using System.Threading.Tasks;
 using System.Windows.Input;
 
 namespace WiFiMapCore.ViewModels
 {
-    internal class Command<T> : ICommand where T : class
+    internal class AsyncCommand<T> : ICommand where T : class
     {
         private readonly Func<T, bool> _canExecute;
 
-        private readonly Action<T> _execute;
+        private readonly Func<T, Task> _execute;
 
-        public Command(Action<T> execute, Func<T, bool> canExecute)
+        public AsyncCommand(Func<T,Task> execute, Func<T, bool> canExecute)
         {
             _execute = execute;
             _canExecute = canExecute;
         }
 
-        public Command(Action<T> execute) : this(execute, obj => true)
+        public AsyncCommand(Func<T,Task> execute) : this(execute, obj => true)
         {
         }
 
@@ -25,9 +26,16 @@ namespace WiFiMapCore.ViewModels
             return _canExecute((T) parameter);
         }
 
-        public void Execute(object parameter)
+        public async void Execute(object parameter)
         {
-            _execute((T) parameter);
+            try
+            { 
+                await _execute((T) parameter); 
+            }
+            catch (TaskCanceledException)
+            {
+                // ignore
+            }
         }
 
         public event EventHandler CanExecuteChanged

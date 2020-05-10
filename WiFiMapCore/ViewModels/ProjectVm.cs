@@ -127,7 +127,7 @@ namespace WiFiMapCore.ViewModels
             }
         }
 
-        public ICommand Click => new Command<MouseButtonEventArgs>(OnClick);
+        public ICommand Click => new AsyncCommand<MouseButtonEventArgs>(OnClick);
 
         public ICommand Hover => new Command<MouseEventArgs>(OnHover);
 
@@ -143,7 +143,7 @@ namespace WiFiMapCore.ViewModels
             }
         }
 
-        private async void OnClick(MouseButtonEventArgs e)
+        private async Task OnClick(MouseButtonEventArgs e)
         {
             using (ProgressVm = new ProgressControlVm())
             {
