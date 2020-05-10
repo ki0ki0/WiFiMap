@@ -47,64 +47,67 @@
         </DataTemplate>
     </UserControl.Resources>
 
-    <DockPanel VerticalAlignment="Stretch">
-        <DockPanel DockPanel.Dock="Top" HorizontalAlignment="Stretch">
-            <Label VerticalAlignment="Center">Zoom:</Label>
-            <Slider VerticalAlignment="Center" Minimum="{Binding ScaleFactorMin}" Maximum="{Binding ScaleFactorMax}"
-                    SmallChange="0.1" Value="{Binding ScaleFactor}" HorizontalAlignment="Stretch" />
-        </DockPanel>
+    <Grid>
+        <DockPanel VerticalAlignment="Stretch">
+            <DockPanel DockPanel.Dock="Top" HorizontalAlignment="Stretch">
+                <Label VerticalAlignment="Center">Zoom:</Label>
+                <Slider VerticalAlignment="Center" Minimum="{Binding ScaleFactorMin}" Maximum="{Binding ScaleFactorMax}"
+                        SmallChange="0.1" Value="{Binding ScaleFactor}" HorizontalAlignment="Stretch" />
+            </DockPanel>
 
-        <TreeView DockPanel.Dock="Left" ItemsSource="{Binding Networks}"
-                  ItemTemplate="{StaticResource CheckBoxItemTemplate}" />
-        <ListView x:Name='lv' DockPanel.Dock="Right" ItemsSource="{Binding Details}"
-                  GridViewColumnHeader.Click="GridViewColumnHeaderClickedHandler" 
-                  SourceUpdated="lv_SourceUpdated"
-                  >
-            <ListView.View>
-                <GridView AllowsColumnReorder="True">
-                    <GridViewColumn Header="SSID" DisplayMemberBinding="{Binding Ssid}" />
-                    <GridViewColumn Header="Mac" DisplayMemberBinding="{Binding Mac}" />
-                    <GridViewColumn Header="Channel" DisplayMemberBinding="{Binding Channel}" />
-                    <GridViewColumn Header="RSSI" DisplayMemberBinding="{Binding Rssi}" />
-                    <GridViewColumn Header="LinkQuality" DisplayMemberBinding="{Binding LinkQuality}" />
-                </GridView>
-            </ListView.View>
-        </ListView>
+            <TreeView DockPanel.Dock="Left" ItemsSource="{Binding Networks}"
+                      ItemTemplate="{StaticResource CheckBoxItemTemplate}" />
+            <ListView x:Name='lv' DockPanel.Dock="Right" ItemsSource="{Binding Details}"
+                      GridViewColumnHeader.Click="GridViewColumnHeaderClickedHandler" 
+                      SourceUpdated="lv_SourceUpdated"
+                      >
+                <ListView.View>
+                    <GridView AllowsColumnReorder="True">
+                        <GridViewColumn Header="SSID" DisplayMemberBinding="{Binding Ssid}" />
+                        <GridViewColumn Header="Mac" DisplayMemberBinding="{Binding Mac}" />
+                        <GridViewColumn Header="Channel" DisplayMemberBinding="{Binding Channel}" />
+                        <GridViewColumn Header="RSSI" DisplayMemberBinding="{Binding Rssi}" />
+                        <GridViewColumn Header="LinkQuality" DisplayMemberBinding="{Binding LinkQuality}" />
+                    </GridView>
+                </ListView.View>
+            </ListView>
 
-        <ScrollViewer HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto" CanContentScroll="True">
-            <Grid Background="Transparent">
-                <b:Interaction.Triggers>
-                    <b:EventTrigger EventName="MouseWheel">
-                        <b:InvokeCommandAction Command="{Binding Wheel}" PassEventArgsToCommand="True" />
-                    </b:EventTrigger>
-                </b:Interaction.Triggers>
+            <ScrollViewer HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto" CanContentScroll="True">
+                <Grid Background="Transparent">
+                    <b:Interaction.Triggers>
+                        <b:EventTrigger EventName="MouseWheel">
+                            <b:InvokeCommandAction Command="{Binding Wheel}" PassEventArgsToCommand="True" />
+                        </b:EventTrigger>
+                    </b:Interaction.Triggers>
 
-                <Grid.LayoutTransform>
-                    <ScaleTransform ScaleX="{Binding ScaleFactor}" ScaleY="{Binding ScaleFactor}" />
-                </Grid.LayoutTransform>
+                    <Grid.LayoutTransform>
+                        <ScaleTransform ScaleX="{Binding ScaleFactor}" ScaleY="{Binding ScaleFactor}" />
+                    </Grid.LayoutTransform>
 
-                <Grid HorizontalAlignment="Center" VerticalAlignment="Center">
+                    <Grid HorizontalAlignment="Center" VerticalAlignment="Center">
 
-                    <Image Source="{Binding Image}" Stretch="None" HorizontalAlignment="Left" VerticalAlignment="Top">
-                        <b:Interaction.Triggers>
-                            <b:EventTrigger EventName="MouseUp">
-                                <b:InvokeCommandAction Command="{Binding Click}" PassEventArgsToCommand="True" />
-                            </b:EventTrigger>
-                        </b:Interaction.Triggers>
-                    </Image>
+                        <Image Source="{Binding Image}" Stretch="None" HorizontalAlignment="Left" VerticalAlignment="Top">
+                            <b:Interaction.Triggers>
+                                <b:EventTrigger EventName="MouseUp">
+                                    <b:InvokeCommandAction Command="{Binding Click}" PassEventArgsToCommand="True" />
+                                </b:EventTrigger>
+                            </b:Interaction.Triggers>
+                        </Image>
 
                         <heatMap:HeatMap PointsSource="{Binding HeatPoints}" HorizontalAlignment="Left" VerticalAlignment="Top">
-                        <heatMap:HeatMap.Effect>
-                            <effects:HeatColorizer Palette="{StaticResource PaletteBrush}" />
-                        </heatMap:HeatMap.Effect>
-                        <b:Interaction.Triggers>
-                            <b:EventTrigger EventName="MouseEnter">
-                                <b:InvokeCommandAction Command="{Binding Hover}" PassEventArgsToCommand="True" />
-                            </b:EventTrigger>
-                        </b:Interaction.Triggers>
-                    </heatMap:HeatMap>
+                            <heatMap:HeatMap.Effect>
+                                <effects:HeatColorizer Palette="{StaticResource PaletteBrush}" />
+                            </heatMap:HeatMap.Effect>
+                            <b:Interaction.Triggers>
+                                <b:EventTrigger EventName="MouseEnter">
+                                    <b:InvokeCommandAction Command="{Binding Hover}" PassEventArgsToCommand="True" />
+                                </b:EventTrigger>
+                            </b:Interaction.Triggers>
+                        </heatMap:HeatMap>
+                    </Grid>
                 </Grid>
-            </Grid>
-        </ScrollViewer>
-    </DockPanel>
+            </ScrollViewer>
+        </DockPanel>
+        <ContentControl Content="{Binding ProgressVm}"/>
+    </Grid>
 </UserControl>

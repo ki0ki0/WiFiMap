@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
+using System.Runtime.CompilerServices;
+using System.Threading;
 using System.Threading.Tasks;
 using WiFiMapCore.Interfaces.Network;
 using WiFiMapCore.Model.Network.ManagedWiFi;
@@ -22,14 +24,14 @@ namespace WiFiMapCore.Model.Network
             _wlanClient = wlanClient;
         }
 
-        public IAsyncEnumerable<IWifiInterface> GetInterfaces()
+        public IAsyncEnumerable<IWifiInterface> GetInterfaces(CancellationToken token = default)
         {
             var networkInterfaces =
                 _wlanClient.Interfaces.Select(i => (IWifiInterface) new WifiInterface(GetInterfaceId(i)));
             return networkInterfaces.ToAsyncEnumerable();
         }
 
-        public async Task ForceUpdate()
+        public async Task ForceUpdate(CancellationToken token = default)
         {
             await Task.FromResult<object?>(null);
             foreach (var wlanInterface in _wlanClient.Interfaces)
@@ -37,7 +39,8 @@ namespace WiFiMapCore.Model.Network
                 wlanInterface.Scan();
             }
         }
-        public async Task ForceUpdate(IWifiInterface @interface)
+
+        public async Task ForceUpdate(IWifiInterface @interface, CancellationToken token = default)
         {
             await Task.FromResult<object?>(null);
             var selectedInterface =
@@ -46,14 +49,34 @@ namespace WiFiMapCore.Model.Network
             selectedInterface.Scan();
         }
 
-        public async IAsyncEnumerable<INetworkInfo> ReadNetworks(IWifiInterface @interface)
+        public async IAsyncEnumerable<INetworkInfo> ReadNetworks([EnumeratorCancellation] CancellationToken token = default)
+        {
+            foreach (var wlanInterface in _wlanClient.Interfaces)
+            {
+                await Task.FromResult<object?>(null);
+                var networkBssList = wlanInterface.GetNetworkBssList();
+
+                foreach (var entry in networkBssList)
+                {
+                    token.ThrowIfCancellationRequested();
+                    yield return new NetworkInfo(entry);
+                }
+            }
+        }
+
+        public async IAsyncEnumerable<INetworkInfo> ReadNetworks(IWifiInterface @interface,
+            [EnumeratorCancellation] CancellationToken token = default)
         {
             var selectedInterface =
                 _wlanClient.Interfaces.Single(wlanInterface => GetInterfaceId(wlanInterface) == @interface.Name);
 
             await Task.FromResult<object?>(null);
             var networkBssList = selectedInterface.GetNetworkBssList();
-            foreach (var entry in networkBssList) yield return new NetworkInfo(entry);
+            foreach (var entry in networkBssList)
+            {
+                token.ThrowIfCancellationRequested();
+                yield return new NetworkInfo(entry);
+            }
         }
 
         private string GetInterfaceId(IWlanInterface wlanInterface)
@@ -90,17 +113,6 @@ namespace WiFiMapCore.Model.Network
 
             return wlanInterfaceInterfaceName ??
                    wlanInterfaceInterfaceDescription ?? wlanInterfaceInterfaceGuid.ToString();
-        }
-
-        public async IAsyncEnumerable<INetworkInfo> ReadNetworks()
-        {
-            foreach (var wlanInterface in _wlanClient.Interfaces)
-            {
-                await Task.FromResult<object?>(null);
-                var networkBssList = wlanInterface.GetNetworkBssList();
-
-                foreach (var entry in networkBssList) yield return new NetworkInfo(entry);
-            }
         }
     }
 }

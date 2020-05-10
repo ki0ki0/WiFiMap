@@ -9,9 +9,9 @@
         mc:Ignorable="d"
         Title="MainWindow" Height="600" Width="1000">
     <Window.Resources>
-        <!--<DataTemplate DataType="{x:Type viewModels:ProjectVm}">
-            <views:ResultView/>
-        </DataTemplate>-->
+        <DataTemplate DataType="{x:Type viewModels:ProgressControlVm}">
+            <views:ProgressView/>
+        </DataTemplate>
         <viewModels:MainVm x:Key="MainVm" />
     </Window.Resources>
 

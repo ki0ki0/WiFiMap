@@ -43,6 +43,9 @@
     <Compile Update="Views\DiagnosticsView.xaml.cs">
       <DependentUpon>Diagnostics.xaml</DependentUpon>
     </Compile>
+    <Compile Update="Views\ProgressView.xaml.cs">
+      <DependentUpon>ProgressView.xaml</DependentUpon>
+    </Compile>
   </ItemGroup>
 
   <ItemGroup>
@@ -56,6 +59,9 @@
       <SubType>Designer</SubType>
     </Page>
     <Page Update="Views\DiagnosticsView.xaml">
+      <Generator></Generator>
+    </Page>
+    <Page Update="Views\ProgressView.xaml">
       <Generator></Generator>
     </Page>
   </ItemGroup>

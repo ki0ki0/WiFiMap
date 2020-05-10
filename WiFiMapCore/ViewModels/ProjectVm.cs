@@ -4,7 +4,6 @@ using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.Linq;
-using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
@@ -32,6 +31,7 @@ namespace WiFiMapCore.ViewModels
         private double _scaleFactor = 1;
         private double _scaleFactorMax = 10;
         private double _scaleFactorMin = 0.1;
+        private ProgressControlVm? _progressVm;
 
         public Project Project
         {
@@ -145,16 +145,20 @@ namespace WiFiMapCore.ViewModels
 
         private async void OnClick(MouseButtonEventArgs e)
         {
-            var inputElement = e.Source as IInputElement;
-            var position = e.GetPosition(inputElement);
-            await _networksSource.ForceUpdate();
-            await Task.Delay(TimeSpan.FromSeconds(5));
-            var bssInfo = await _networksSource.ReadNetworks().ToListAsync();
-            var scanPoint = new ScanPoint((int) position.X, (int) position.Y, bssInfo);
-            ScanPoints.Add(scanPoint);
-            Project.ScanPoints.Add(scanPoint);
-            IsModified = true;
-            Update();
+            using (ProgressVm = new ProgressControlVm())
+            {
+                var inputElement = e.Source as IInputElement;
+                var position = e.GetPosition(inputElement);
+                await _networksSource.ForceUpdate(ProgressVm.Token);
+                await Task.Delay(TimeSpan.FromSeconds(5), ProgressVm.Token);
+                var bssInfo = await _networksSource.ReadNetworks(ProgressVm.Token)
+                    .ToListAsync(ProgressVm.Token);
+                var scanPoint = new ScanPoint((int) position.X, (int) position.Y, bssInfo);
+                ScanPoints.Add(scanPoint);
+                Project.ScanPoints.Add(scanPoint);
+                IsModified = true;
+                Update();
+            }
         }
 
         private void OnWheel(MouseWheelEventArgs obj)
@@ -238,6 +242,16 @@ namespace WiFiMapCore.ViewModels
             }
 
             HeatPoints = new ObservableCollection<HeatPoint>(heatPoints);
+        }
+
+        public ProgressControlVm? ProgressVm
+        {
+            get => _progressVm;
+            set
+            {
+                _progressVm = value;
+                OnPropertyChanged(nameof(ProgressVm));
+            }
         }
     }
 }
