@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
+using System.Configuration;
 using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
@@ -150,7 +151,13 @@ namespace WiFiMapCore.ViewModels
                 var inputElement = e.Source as IInputElement;
                 var position = e.GetPosition(inputElement);
                 await _networksSource.ForceUpdate(ProgressVm.Token);
-                await Task.Delay(TimeSpan.FromSeconds(5), ProgressVm.Token);
+                var pointScanTime = ConfigurationManager.AppSettings.Get("PointScanTime");
+                TimeSpan time;
+                if (TimeSpan.TryParse(pointScanTime, out time))
+                {
+                    time = TimeSpan.FromSeconds(5);
+                }
+                await Task.Delay(time, ProgressVm.Token);
                 var bssInfo = await _networksSource.ReadNetworks(ProgressVm.Token)
                     .ToListAsync(ProgressVm.Token);
                 var scanPoint = new ScanPoint((int) position.X, (int) position.Y, bssInfo);

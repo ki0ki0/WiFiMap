@@ -47,6 +47,11 @@
                 </Style>
             </Ellipse.Style>
         </Ellipse>
+        <Ellipse Grid.Row="1" Width="25" Height="25" Fill="White">
+            <Ellipse.RenderTransform>
+                <RotateTransform CenterX="25" CenterY="25"/>
+            </Ellipse.RenderTransform>
+        </Ellipse>
         <Button Grid.Row="2" Content="Cancel" Command="{Binding Cancel}" HorizontalAlignment="Center" VerticalAlignment="Center" Padding="10"/>
     </Grid>
 </UserControl>

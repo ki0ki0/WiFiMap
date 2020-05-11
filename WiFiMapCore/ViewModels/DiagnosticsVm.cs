@@ -1,4 +1,6 @@
-﻿using System.Collections.ObjectModel;
+﻿using System;
+using System.Collections.ObjectModel;
+using System.Configuration;
 using System.Linq;
 using System.Timers;
 using System.Windows;
@@ -12,7 +14,7 @@ namespace WiFiMapCore.ViewModels
     {
         private ObservableCollection<INetworkInfo> _details = new ObservableCollection<INetworkInfo>();
 
-        private Timer _timer = new Timer(1000);
+        private readonly Timer _timer;
         public ObservableCollection<INetworkInfo> Details
         {
             get => _details;
@@ -27,6 +29,14 @@ namespace WiFiMapCore.ViewModels
 
         public DiagnosticsVm()
         {
+            var diagnosticsUpdatePeriod = ConfigurationManager.AppSettings.Get("DiagnosticsUpdatePeriod");
+            TimeSpan period;
+            if (TimeSpan.TryParse(diagnosticsUpdatePeriod, out period))
+            {
+                period = TimeSpan.FromSeconds(1);
+            }
+            _timer = new Timer(period.TotalMilliseconds);
+            
             _timer.Elapsed += TimerOnElapsed;
             _timer.AutoReset = true;
             _timer.Start();

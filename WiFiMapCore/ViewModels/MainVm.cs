@@ -27,12 +27,8 @@ namespace WiFiMapCore.ViewModels
         public ICommand NewProject => new BasicCommand(OnNewProject);
         public ICommand LoadProject => new BasicCommand(OnLoadProject);
         public ICommand SaveProject => new BasicCommand(OnSaveProject, SaveProjectCanExecute);
-
         public ICommand Exit => new BasicCommand(OnExit);
-
         public ICommand Close => new Command<CancelEventArgs>(OnClose);
-
-
         public ICommand Diagnostics => new Command<CancelEventArgs>(OnDiagnostics);
 
         public ProjectVm ProjectVm { get; } = new ProjectVm();
@@ -40,7 +36,7 @@ namespace WiFiMapCore.ViewModels
         private void OnDiagnostics(CancelEventArgs obj)
         {
             var diagnosticsView = new DiagnosticsView();
-            diagnosticsView.Show();
+            diagnosticsView.ShowDialog();
         }
 
         public void OnNewProject(object param)

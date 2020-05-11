@@ -102,6 +102,10 @@
                                 <b:EventTrigger EventName="MouseEnter">
                                     <b:InvokeCommandAction Command="{Binding Hover}" PassEventArgsToCommand="True" />
                                 </b:EventTrigger>
+                                
+                                <b:EventTrigger EventName="MouseUp">
+                                    <b:InvokeCommandAction Command="{Binding Click}" PassEventArgsToCommand="True" />
+                                </b:EventTrigger>
                             </b:Interaction.Triggers>
                         </heatMap:HeatMap>
                     </Grid>
