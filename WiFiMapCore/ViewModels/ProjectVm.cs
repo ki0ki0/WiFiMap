@@ -187,13 +187,14 @@ namespace WiFiMapCore.ViewModels
         {
             var inputElement = e.Source as IInputElement;
             var position = e.GetPosition(inputElement);
-            var min = ScanPoints.Min(point => Math.Abs(point.Position.X - (int)position.X) + Math.Abs(point.Position.Y - (int)position.Y));
-            var firstOrDefault = ScanPoints.FirstOrDefault(point => min == Math.Abs(point.Position.X - (int)position.X) + Math.Abs(point.Position.Y - (int)position.Y));
-            if (firstOrDefault != null)
+            var tuple = ScanPoints.Aggregate<IScanPoint, Tuple<IScanPoint, int>?>(null,(min, cur) =>
             {
-                _currentDetailsPoint = firstOrDefault;
-                UpdateDetails();
-            }
+                var distance = Math.Abs(cur.Position.X - (int) position.X) + Math.Abs(cur.Position.Y - (int) position.Y);
+                return distance > min?.Item2 ? min : new Tuple<IScanPoint, int>(cur, distance);
+            });
+            
+            _currentDetailsPoint = tuple?.Item1;
+            UpdateDetails();
         }
 
         private void UpdateDetails()
@@ -234,7 +235,7 @@ namespace WiFiMapCore.ViewModels
 
             foreach (var networkVm in networkVms) networkVm.PropertyChanged += NetworkVmOnPropertyChanged;
 
-            Networks = new ObservableCollection<NetworkVm>(networkVms);
+            Networks = new ObservableCollection<NetworkVm>(networkVms.OrderBy(vm => vm.Name));
 
             UpdateHeatMap();
         }
