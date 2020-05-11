@@ -59,11 +59,10 @@
                       ItemTemplate="{StaticResource CheckBoxItemTemplate}" />
             <ListView x:Name='lv' DockPanel.Dock="Right" ItemsSource="{Binding Details}"
                       GridViewColumnHeader.Click="GridViewColumnHeaderClickedHandler" 
-                      SourceUpdated="lv_SourceUpdated"
                       >
                 <ListView.View>
                     <GridView AllowsColumnReorder="True">
-                        <GridViewColumn Header="SSID" >
+                        <GridViewColumn Header="Ssid" >
                             <GridViewColumn.CellTemplate>
                                 <DataTemplate>
                                     <TextBlock Text="{Binding Ssid, Mode=OneTime}">
@@ -140,9 +139,7 @@
                             </ItemsControl.ItemContainerStyle>
                             <ItemsControl.ItemTemplate>
                                 <DataTemplate>
-                                    <Ellipse Width="10" Height="10" Fill="Aqua" Margin="-5,-5,0,0" >
-                        
-                                    </Ellipse>
+                                    <Ellipse Width="10" Height="10" Fill="Aqua" Margin="-5,-5,0,0" />
                                 </DataTemplate>
                             </ItemsControl.ItemTemplate>
                         </ItemsControl>
@@ -167,9 +164,7 @@
                             </ItemsControl.ItemContainerStyle>
                             <ItemsControl.ItemTemplate>
                                 <DataTemplate>
-                                    <Ellipse Width="10" Height="10" Fill="Blue" Margin="-5,-5,0,0" >
-
-                                    </Ellipse>
+                                    <Ellipse Width="10" Height="10" Fill="Blue" Margin="-5,-5,0,0" />
                                 </DataTemplate>
                             </ItemsControl.ItemTemplate>
                         </ItemsControl>

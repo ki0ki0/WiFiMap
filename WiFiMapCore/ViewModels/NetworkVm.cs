@@ -27,7 +27,11 @@ namespace WiFiMapCore.ViewModels
         {
             Name = name;
             _info = new NetworkInfo();
-            _children = new ObservableCollection<NetworkVm>(macs.Select(mac => new NetworkVm(mac)));
+            var networkVms = macs
+                .OrderBy(info => info.Channel)
+                .ThenBy(info => info.Mac)
+                .Select(mac => new NetworkVm(mac));
+            _children = new ObservableCollection<NetworkVm>(networkVms);
             foreach (var networkVm in _children) networkVm.PropertyChanged += NetworkVmOnPropertyChanged;
         }
 

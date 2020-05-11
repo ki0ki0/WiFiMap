@@ -204,7 +204,11 @@ namespace WiFiMapCore.ViewModels
             }).ToHashSet();
 
             Details.Clear();
-            foreach (var networkInfo in _currentDetailsPoint.BssInfo)
+            var orderedEnumerable = _currentDetailsPoint.BssInfo
+                .OrderBy(i => i.Ssid)
+                .ThenBy(i => i.Channel)
+                .ThenBy(i => i.Mac);
+            foreach (var networkInfo in orderedEnumerable)
             {
                 var contains = macs.Contains(networkInfo.Mac);
                 Details.Add(new NetworkInfoDetailsVm(networkInfo, contains));
