@@ -63,11 +63,27 @@
                       >
                 <ListView.View>
                     <GridView AllowsColumnReorder="True">
-                        <GridViewColumn Header="SSID" DisplayMemberBinding="{Binding Ssid}" />
-                        <GridViewColumn Header="Mac" DisplayMemberBinding="{Binding Mac}" />
-                        <GridViewColumn Header="Channel" DisplayMemberBinding="{Binding Channel}" />
-                        <GridViewColumn Header="RSSI" DisplayMemberBinding="{Binding Rssi}" />
-                        <GridViewColumn Header="LinkQuality" DisplayMemberBinding="{Binding LinkQuality}" />
+                        <GridViewColumn Header="SSID" >
+                            <GridViewColumn.CellTemplate>
+                                <DataTemplate>
+                                    <TextBlock Text="{Binding Ssid, Mode=OneTime}">
+                                        <TextBlock.Style>
+                                            <Style TargetType="TextBlock">
+                                                <Style.Triggers>
+                                                    <DataTrigger Binding="{Binding IsSelected}" Value="True">
+                                                        <Setter Property="FontWeight" Value="Bold"/>
+                                                    </DataTrigger>
+                                                </Style.Triggers>
+                                            </Style>
+                                        </TextBlock.Style>
+                                    </TextBlock>
+                                </DataTemplate>
+                            </GridViewColumn.CellTemplate>
+                        </GridViewColumn>
+                        <GridViewColumn Header="Mac" DisplayMemberBinding="{Binding Mac, Mode=OneTime}" />
+                        <GridViewColumn Header="Channel" DisplayMemberBinding="{Binding Channel, Mode=OneTime}" />
+                        <GridViewColumn Header="RSSI" DisplayMemberBinding="{Binding Rssi, Mode=OneTime}" />
+                        <GridViewColumn Header="LinkQuality" DisplayMemberBinding="{Binding LinkQuality, Mode=OneTime}" />
                     </GridView>
                 </ListView.View>
             </ListView>

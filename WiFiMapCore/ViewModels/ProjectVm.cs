@@ -33,6 +33,7 @@ namespace WiFiMapCore.ViewModels
         private double _scaleFactorMax = 10;
         private double _scaleFactorMin = 0.1;
         private ProgressControlVm? _progressVm;
+        private IScanPoint? _currentDetailsPoint;
 
         public Project Project
         {
@@ -185,11 +186,28 @@ namespace WiFiMapCore.ViewModels
             var firstOrDefault = ScanPoints.FirstOrDefault(point => min == Math.Abs(point.Position.X - (int)position.X) + Math.Abs(point.Position.Y - (int)position.Y));
             if (firstOrDefault != null)
             {
-                Details.Clear();
-                foreach (var networkInfo in firstOrDefault.BssInfo)
-                {
-                    Details.Add(networkInfo);
-                }
+                _currentDetailsPoint = firstOrDefault;
+                UpdateDetails();
+            }
+        }
+
+        private void UpdateDetails()
+        {
+            if (_currentDetailsPoint == null)
+                return;
+            
+            var macs = Networks.SelectMany(vm =>
+            {
+                return vm.Children
+                    .Where(networkVm => networkVm.IsChecked != false)
+                    .Select(i => i.Mac);
+            }).ToHashSet();
+
+            Details.Clear();
+            foreach (var networkInfo in _currentDetailsPoint.BssInfo)
+            {
+                var contains = macs.Contains(networkInfo.Mac);
+                Details.Add(new NetworkInfoDetailsVm(networkInfo, contains));
             }
         }
 
@@ -215,6 +233,7 @@ namespace WiFiMapCore.ViewModels
         private void NetworkVmOnPropertyChanged(object sender, PropertyChangedEventArgs e)
         {
             UpdateHeatMap();
+            UpdateDetails();
         }
 
         private void UpdateHeatMap()
