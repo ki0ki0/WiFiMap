@@ -11,7 +11,7 @@ namespace WiFiMapCore.ViewModels
     {
         private ObservableCollection<NetworkVm> _children;
         private bool _ignoreChildren;
-        private bool? _isChecked = true;
+        private bool? _isChecked = false;
         private string _name = "";
         private INetworkInfo _info;
         public string Mac => _info.Mac;

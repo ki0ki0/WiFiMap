@@ -93,21 +93,71 @@
                                 </b:EventTrigger>
                             </b:Interaction.Triggers>
                         </Image>
-
+                        
                         <heatMap:HeatMap PointsSource="{Binding HeatPoints}" HorizontalAlignment="Left" VerticalAlignment="Top">
                             <heatMap:HeatMap.Effect>
                                 <effects:HeatColorizer Palette="{StaticResource PaletteBrush}" />
                             </heatMap:HeatMap.Effect>
                             <b:Interaction.Triggers>
-                                <b:EventTrigger EventName="MouseEnter">
-                                    <b:InvokeCommandAction Command="{Binding Hover}" PassEventArgsToCommand="True" />
-                                </b:EventTrigger>
-                                
                                 <b:EventTrigger EventName="MouseUp">
                                     <b:InvokeCommandAction Command="{Binding Click}" PassEventArgsToCommand="True" />
                                 </b:EventTrigger>
                             </b:Interaction.Triggers>
                         </heatMap:HeatMap>
+                        
+                        <ItemsControl ItemsSource="{Binding ScanPoints}" HorizontalAlignment="Left" VerticalAlignment="Top">
+                            <b:Interaction.Triggers>
+                                <b:EventTrigger EventName="MouseEnter">
+                                    <b:InvokeCommandAction Command="{Binding Hover}" PassEventArgsToCommand="True" />
+                                </b:EventTrigger>
+                            </b:Interaction.Triggers>
+                            <ItemsControl.ItemsPanel>
+                                <ItemsPanelTemplate>
+                                    <Canvas />
+                                </ItemsPanelTemplate>
+                            </ItemsControl.ItemsPanel>
+                            <ItemsControl.ItemContainerStyle>
+                                <Style TargetType="ContentPresenter">
+                                    <Setter Property="Canvas.Top" Value="{Binding Position.Y}" />
+                                    <Setter Property="Canvas.Left" Value="{Binding Position.X}" />
+                                </Style>
+                            </ItemsControl.ItemContainerStyle>
+                            <ItemsControl.ItemTemplate>
+                                <DataTemplate>
+                                    <Ellipse Width="10" Height="10" Fill="Aqua" Margin="-5,-5,0,0" >
+                        
+                                    </Ellipse>
+                                </DataTemplate>
+                            </ItemsControl.ItemTemplate>
+                        </ItemsControl>
+                        
+                        
+                        <ItemsControl ItemsSource="{Binding HeatPoints}" HorizontalAlignment="Left" VerticalAlignment="Top">
+                            <b:Interaction.Triggers>
+                                <b:EventTrigger EventName="MouseEnter">
+                                    <b:InvokeCommandAction Command="{Binding Hover}" PassEventArgsToCommand="True" />
+                                </b:EventTrigger>
+                            </b:Interaction.Triggers>
+                            <ItemsControl.ItemsPanel>
+                                <ItemsPanelTemplate>
+                                    <Canvas />
+                                </ItemsPanelTemplate>
+                            </ItemsControl.ItemsPanel>
+                            <ItemsControl.ItemContainerStyle>
+                                <Style TargetType="ContentPresenter">
+                                    <Setter Property="Canvas.Top" Value="{Binding Y}" />
+                                    <Setter Property="Canvas.Left" Value="{Binding X}" />
+                                </Style>
+                            </ItemsControl.ItemContainerStyle>
+                            <ItemsControl.ItemTemplate>
+                                <DataTemplate>
+                                    <Ellipse Width="10" Height="10" Fill="Blue" Margin="-5,-5,0,0" >
+
+                                    </Ellipse>
+                                </DataTemplate>
+                            </ItemsControl.ItemTemplate>
+                        </ItemsControl>
+
                     </Grid>
                 </Grid>
             </ScrollViewer>

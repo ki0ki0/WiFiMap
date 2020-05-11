@@ -2,9 +2,9 @@ namespace WiFiMapCore.HeatMap
 {
     public struct HeatPoint
     {
-        public int X;
-        public int Y;
-        public byte Intensity;
+        public int X { get; }
+        public int Y { get; }
+        public byte Intensity { get; }
 
         public HeatPoint(int x, int y, byte intensity)
         {
