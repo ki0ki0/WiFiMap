@@ -5,6 +5,7 @@ using System.Linq;
 using System.Timers;
 using System.Windows;
 using WiFiMapCore.Interfaces.Network;
+using WiFiMapCore.Model;
 using WiFiMapCore.Model.Network;
 using DispatcherPriority = System.Windows.Threading.DispatcherPriority;
 
@@ -29,13 +30,7 @@ namespace WiFiMapCore.ViewModels
 
         public DiagnosticsVm()
         {
-            var diagnosticsUpdatePeriod = ConfigurationManager.AppSettings.Get("DiagnosticsUpdatePeriod");
-            TimeSpan period;
-            if (TimeSpan.TryParse(diagnosticsUpdatePeriod, out period))
-            {
-                period = TimeSpan.FromSeconds(1);
-            }
-            _timer = new Timer(period.TotalMilliseconds);
+            _timer = new Timer(Settings.DiagnosticsUpdatePeriod.TotalMilliseconds);
             
             _timer.Elapsed += TimerOnElapsed;
             _timer.AutoReset = true;

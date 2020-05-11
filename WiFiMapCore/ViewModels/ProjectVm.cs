@@ -152,22 +152,27 @@ namespace WiFiMapCore.ViewModels
                 var inputElement = e.Source as IInputElement;
                 var position = e.GetPosition(inputElement);
                 await _networksSource.ForceUpdate(ProgressVm.Token);
-                var pointScanTime = ConfigurationManager.AppSettings.Get("PointScanTime");
-                TimeSpan time;
-                if (TimeSpan.TryParse(pointScanTime, out time))
+
+                List<INetworkInfo> bssInfo = new List<INetworkInfo>();
+                for (int i = 0; i < Settings.PointScanCount; i++)
                 {
-                    time = TimeSpan.FromSeconds(5);
+                    await Task.Delay(Settings.PointScanTime, ProgressVm.Token);
+                    bssInfo.AddRange( await _networksSource.ReadNetworks(ProgressVm.Token)
+                        .ToListAsync(ProgressVm.Token));
                 }
-                await Task.Delay(time, ProgressVm.Token);
-                var bssInfo = await _networksSource.ReadNetworks(ProgressVm.Token)
-                    .ToListAsync(ProgressVm.Token);
-                var scanPoint = new ScanPoint((int) position.X, (int) position.Y, bssInfo);
+
+                var groupBy = bssInfo.GroupBy(info => info.Mac);
+                var minInfos = groupBy.Select(infos => 
+                    infos.Aggregate((min, x) => x.Rssi > min?.Rssi ? min : x));
+
+                var scanPoint = new ScanPoint((int) position.X, (int) position.Y, minInfos);
                 ScanPoints.Add(scanPoint);
                 Project.ScanPoints.Add(scanPoint);
                 IsModified = true;
                 Update();
             }
         }
+
 
         private void OnWheel(MouseWheelEventArgs obj)
         {
