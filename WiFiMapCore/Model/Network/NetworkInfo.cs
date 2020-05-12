@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using WiFiMapCore.Interfaces.Network;
@@ -18,10 +17,7 @@ namespace WiFiMapCore.Model.Network
             LinkQuality = wlanBssEntry.linkQuality;
             ChCenterFrequency = wlanBssEntry.chCenterFrequency;
             uint channel;
-            if (Metadata.ChannelsMap.TryGetValue(ChCenterFrequency / 1000, out channel))
-            {
-                Channel = channel;
-            }
+            if (Metadata.ChannelsMap.TryGetValue(ChCenterFrequency / 1000, out channel)) Channel = channel;
         }
 
         public NetworkInfo()

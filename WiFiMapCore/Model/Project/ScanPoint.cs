@@ -9,11 +9,6 @@ namespace WiFiMapCore.Model.Project
 {
     public class ScanPoint : IScanPoint
     {
-        public List<INetworkInfo> BssInfo { get; } = new List<INetworkInfo>();
-        public Point Position { get; set; }
-
-        IEnumerable<INetworkInfo> IScanPoint.BssInfo => BssInfo;
-
         public ScanPoint()
         {
         }
@@ -23,6 +18,11 @@ namespace WiFiMapCore.Model.Project
             Position = new Point(x, y);
             BssInfo.AddRange(infos);
         }
+
+        public List<INetworkInfo> BssInfo { get; } = new List<INetworkInfo>();
+        public Point Position { get; set; }
+
+        IEnumerable<INetworkInfo> IScanPoint.BssInfo => BssInfo;
 
         protected bool Equals(ScanPoint other)
         {

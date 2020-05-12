@@ -920,7 +920,8 @@ namespace WiFiMapCore.Model.Network.ManagedWiFi
 	        /// </summary>
 	        /// <param name="rateIndex">The WLAN rate index (0-based).</param>
 	        /// <returns>The data transfer rate in mbit/s.</returns>
-	        /// <exception cref="ArgumentOutOfRangeException">Thrown if
+	        /// <exception cref="ArgumentOutOfRangeException">
+	        ///     Thrown if
 	        ///     <param name="rateIndex" />
 	        ///     does not specify an existing rate.
 	        /// </exception>

@@ -34,7 +34,7 @@
     <Compile Update="Views\BlankView.xaml.cs">
       <DependentUpon>BlankView.xaml</DependentUpon>
     </Compile>
-    <Compile Update="Views\ResultView.xaml.cs">
+    <Compile Update="Views\ScanView.xaml.cs">
       <DependentUpon>ResultView.xaml</DependentUpon>
     </Compile>
     <Compile Update="Views\ScanView.xaml.cs">
@@ -52,7 +52,7 @@
     <Page Update="Views\BlankView.xaml">
       <SubType>Designer</SubType>
     </Page>
-    <Page Update="Views\ResultView.xaml">
+    <Page Update="Views\ScanView.xaml">
       <SubType>Designer</SubType>
     </Page>
     <Page Update="Views\ScanView.xaml">

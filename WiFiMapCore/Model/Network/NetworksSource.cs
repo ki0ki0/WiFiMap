@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Threading;
@@ -34,10 +33,7 @@ namespace WiFiMapCore.Model.Network
         public async Task ForceUpdate(CancellationToken token = default)
         {
             await Task.FromResult<object?>(null);
-            foreach (var wlanInterface in _wlanClient.Interfaces)
-            {
-                wlanInterface.Scan();
-            }
+            foreach (var wlanInterface in _wlanClient.Interfaces) wlanInterface.Scan();
         }
 
         public async Task ForceUpdate(IWifiInterface @interface, CancellationToken token = default)
@@ -49,7 +45,8 @@ namespace WiFiMapCore.Model.Network
             selectedInterface.Scan();
         }
 
-        public async IAsyncEnumerable<INetworkInfo> ReadNetworks([EnumeratorCancellation] CancellationToken token = default)
+        public async IAsyncEnumerable<INetworkInfo> ReadNetworks(
+            [EnumeratorCancellation] CancellationToken token = default)
         {
             foreach (var wlanInterface in _wlanClient.Interfaces)
             {

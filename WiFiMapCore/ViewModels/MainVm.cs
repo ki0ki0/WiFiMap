@@ -31,7 +31,7 @@ namespace WiFiMapCore.ViewModels
         public ICommand Close => new Command<CancelEventArgs>(OnClose);
         public ICommand Diagnostics => new Command<CancelEventArgs>(OnDiagnostics);
 
-        public ProjectVm ProjectVm { get; } = new ProjectVm();
+        public ScanVm ScanVm { get; } = new ScanVm();
 
         private void OnDiagnostics(CancelEventArgs obj)
         {
@@ -52,7 +52,7 @@ namespace WiFiMapCore.ViewModels
                     BitmapCacheOption.Default);
                 var bitmap = bitmapDecoder.Frames[0];
                 project.Bitmap = ImageCoder.ImageToByte(bitmap);
-                ProjectVm.Project = project;
+                ScanVm.Project = project;
             }
         }
 
@@ -73,12 +73,12 @@ namespace WiFiMapCore.ViewModels
         {
             IStorage<Project> str = new JsonFileStorage<Project>(fileName);
             var project = await str.Load();
-            ProjectVm.Project = project;
+            ScanVm.Project = project;
         }
 
         private bool SaveProjectCanExecute(object arg)
         {
-            return ProjectVm.IsModified;
+            return ScanVm.IsModified;
         }
 
         public async void OnSaveProject(object param)
@@ -90,14 +90,14 @@ namespace WiFiMapCore.ViewModels
             if (openFileDialog.ShowDialog() == true)
             {
                 IStorage<Project> str = new JsonFileStorage<Project>(openFileDialog.FileName);
-                await str.Save(ProjectVm.Project);
-                ProjectVm.IsModified = false;
+                await str.Save(ScanVm.Project);
+                ScanVm.IsModified = false;
             }
         }
 
         public void OnClose(CancelEventArgs e)
         {
-            if (ProjectVm?.IsModified == true)
+            if (ScanVm?.IsModified == true)
                 if (MessageBox.Show("Exit without saving?", "Exit", MessageBoxButton.YesNoCancel) !=
                     MessageBoxResult.Yes)
                     e.Cancel = true;

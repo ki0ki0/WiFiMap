@@ -10,7 +10,7 @@
         Title="MainWindow" Height="600" Width="1000">
     <Window.Resources>
         <DataTemplate DataType="{x:Type viewModels:ProgressControlVm}">
-            <views:ProgressView/>
+            <views:ProgressView />
         </DataTemplate>
         <viewModels:MainVm x:Key="MainVm" />
     </Window.Resources>
@@ -40,7 +40,7 @@
             </MenuItem>
         </Menu>
 
-        <views:ResultView DataContext="{Binding ProjectVm}" />
+        <views:ScanView DataContext="{Binding ScanVm}" />
 
     </DockPanel>
 </Window>

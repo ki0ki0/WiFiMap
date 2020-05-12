@@ -10,6 +10,6 @@ namespace WiFiMapCore.Interfaces.Network
         Task ForceUpdate(CancellationToken token = default);
         Task ForceUpdate(IWifiInterface interfaceName, CancellationToken token = default);
         IAsyncEnumerable<INetworkInfo> ReadNetworks(CancellationToken token = default);
-        IAsyncEnumerable<INetworkInfo> ReadNetworks(IWifiInterface interfaceName,CancellationToken token = default);
+        IAsyncEnumerable<INetworkInfo> ReadNetworks(IWifiInterface interfaceName, CancellationToken token = default);
     }
 }

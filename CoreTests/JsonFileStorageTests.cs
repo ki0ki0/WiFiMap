@@ -12,6 +12,31 @@ namespace CoreTests
     public class JsonFileStorageTests
     {
         [Fact]
+        public async Task Load_CorrectFileContent()
+        {
+            var networkInfo = new NetworkInfo();
+            networkInfo.ChCenterFrequency = 1;
+            networkInfo.Channel = 2;
+            networkInfo.LinkQuality = 3;
+            networkInfo.Mac = "4";
+            networkInfo.Rssi = 5;
+            networkInfo.Ssid = "6";
+
+            var scanPoint = new ScanPoint();
+            scanPoint.Position = new Point(7, 8);
+            scanPoint.BssInfo.Add(networkInfo);
+
+            var expected = new Project();
+            expected.Bitmap = new byte[] {9, 10, 11};
+            expected.ScanPoints.Add(scanPoint);
+
+            var jsonFileStorage = new JsonFileStorage<Project>("Data\\test.json");
+            var actual = await jsonFileStorage.Load();
+
+            Assert.Equal(expected, actual);
+        }
+
+        [Fact]
         public async Task Save_CorrectFileContent()
         {
             var networkInfo = new NetworkInfo();
@@ -38,31 +63,6 @@ namespace CoreTests
             var actual = await File.ReadAllTextAsync(tempFileName);
 
             var expected = await File.ReadAllTextAsync("Data\\test.json");
-            Assert.Equal(expected, actual);
-        }
-
-        [Fact]
-        public async Task Load_CorrectFileContent()
-        {
-            var networkInfo = new NetworkInfo();
-            networkInfo.ChCenterFrequency = 1;
-            networkInfo.Channel = 2;
-            networkInfo.LinkQuality = 3;
-            networkInfo.Mac = "4";
-            networkInfo.Rssi = 5;
-            networkInfo.Ssid = "6";
-
-            var scanPoint = new ScanPoint();
-            scanPoint.Position = new Point(7, 8);
-            scanPoint.BssInfo.Add(networkInfo);
-
-            var expected = new Project();
-            expected.Bitmap = new byte[] {9, 10, 11};
-            expected.ScanPoints.Add(scanPoint);
-            
-            var jsonFileStorage = new JsonFileStorage<Project>("Data\\test.json");
-            var actual = await jsonFileStorage.Load();
-
             Assert.Equal(expected, actual);
         }
 

@@ -1,6 +1,4 @@
-﻿using WiFiMapCore.Model.Network;
-
-namespace WiFiMapCore.Interfaces.Network
+﻿namespace WiFiMapCore.Interfaces.Network
 {
     public interface INetworkInfo
     {

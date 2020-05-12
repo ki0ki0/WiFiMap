@@ -1,5 +1,4 @@
 ﻿using System;
-using System.IO;
 using System.Threading;
 using System.Windows.Input;
 
@@ -22,16 +21,16 @@ namespace WiFiMapCore.ViewModels
             }
         }
 
-        private void OnCancel(MouseEventArgs obj)
-        {
-            _cancellationTokenSource.Cancel();
-        }
-
         public CancellationToken Token => _cancellationTokenSource.Token;
 
         public void Dispose()
         {
             IsVisible = false;
+            _cancellationTokenSource.Cancel();
+        }
+
+        private void OnCancel(MouseEventArgs obj)
+        {
             _cancellationTokenSource.Cancel();
         }
     }

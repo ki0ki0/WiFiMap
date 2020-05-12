@@ -2,8 +2,6 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
-using System.Configuration;
-using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
@@ -19,21 +17,21 @@ using WiFiMapCore.Model.Project;
 
 namespace WiFiMapCore.ViewModels
 {
-    public class ProjectVm : BaseVm
+    public class ScanVm : BaseVm
     {
+        private readonly NetworksSource _networksSource = new NetworksSource();
+        private IScanPoint? _currentDetailsPoint;
+        private ObservableCollection<INetworkInfo> _details = new ObservableCollection<INetworkInfo>();
+        private ObservableCollection<HeatPoint> _heatPoints = new ObservableCollection<HeatPoint>();
         private ImageSource _image = new BitmapImage();
         private bool _isModified;
-        private ObservableCollection<IScanPoint> _scanPoints = new ObservableCollection<IScanPoint>();
         private ObservableCollection<NetworkVm> _networks = new ObservableCollection<NetworkVm>();
-        private readonly NetworksSource _networksSource = new NetworksSource();
-        private ObservableCollection<HeatPoint> _heatPoints = new ObservableCollection<HeatPoint>();
-        private ObservableCollection<INetworkInfo> _details = new ObservableCollection<INetworkInfo>();
+        private ProgressControlVm? _progressVm;
         private Project _project = new Project();
         private double _scaleFactor = 1;
         private double _scaleFactorMax = 10;
         private double _scaleFactorMin = 0.1;
-        private ProgressControlVm? _progressVm;
-        private IScanPoint? _currentDetailsPoint;
+        private ObservableCollection<IScanPoint> _scanPoints = new ObservableCollection<IScanPoint>();
 
         public Project Project
         {
@@ -145,6 +143,16 @@ namespace WiFiMapCore.ViewModels
             }
         }
 
+        public ProgressControlVm? ProgressVm
+        {
+            get => _progressVm;
+            set
+            {
+                _progressVm = value;
+                OnPropertyChanged(nameof(ProgressVm));
+            }
+        }
+
         private async Task OnClick(MouseButtonEventArgs e)
         {
             using (ProgressVm = new ProgressControlVm())
@@ -154,15 +162,15 @@ namespace WiFiMapCore.ViewModels
                 await _networksSource.ForceUpdate(ProgressVm.Token);
 
                 List<INetworkInfo> bssInfo = new List<INetworkInfo>();
-                for (int i = 0; i < Settings.PointScanCount; i++)
+                for (var i = 0; i < Settings.PointScanCount; i++)
                 {
                     await Task.Delay(Settings.PointScanTime, ProgressVm.Token);
-                    bssInfo.AddRange( await _networksSource.ReadNetworks(ProgressVm.Token)
+                    bssInfo.AddRange(await _networksSource.ReadNetworks(ProgressVm.Token)
                         .ToListAsync(ProgressVm.Token));
                 }
 
                 var groupBy = bssInfo.GroupBy(info => info.Mac);
-                var minInfos = groupBy.Select(infos => 
+                var minInfos = groupBy.Select(infos =>
                     infos.Aggregate((min, x) => x.Rssi > min?.Rssi ? min : x));
 
                 var scanPoint = new ScanPoint((int) position.X, (int) position.Y, minInfos);
@@ -187,12 +195,13 @@ namespace WiFiMapCore.ViewModels
         {
             var inputElement = e.Source as IInputElement;
             var position = e.GetPosition(inputElement);
-            var tuple = ScanPoints.Aggregate<IScanPoint, Tuple<IScanPoint, int>?>(null,(min, cur) =>
+            var tuple = ScanPoints.Aggregate<IScanPoint, Tuple<IScanPoint, int>?>(null, (min, cur) =>
             {
-                var distance = Math.Abs(cur.Position.X - (int) position.X) + Math.Abs(cur.Position.Y - (int) position.Y);
+                var distance = Math.Abs(cur.Position.X - (int) position.X) +
+                               Math.Abs(cur.Position.Y - (int) position.Y);
                 return distance > min?.Item2 ? min : new Tuple<IScanPoint, int>(cur, distance);
             });
-            
+
             _currentDetailsPoint = tuple?.Item1;
             UpdateDetails();
         }
@@ -201,7 +210,7 @@ namespace WiFiMapCore.ViewModels
         {
             if (_currentDetailsPoint == null)
                 return;
-            
+
             var macs = Networks.SelectMany(vm =>
             {
                 return vm.Children
@@ -256,7 +265,7 @@ namespace WiFiMapCore.ViewModels
                     .Where(networkVm => networkVm.IsChecked != false)
                     .Select(i => i.Mac);
             }).ToHashSet();
-            
+
             foreach (var scanPoint in ScanPoints)
             {
                 var entities = scanPoint.BssInfo.Where(info => macs.Contains(info.Mac)).ToArray();
@@ -264,30 +273,14 @@ namespace WiFiMapCore.ViewModels
                 {
                     var max = entities.Max(i => i.Rssi);
                     max = max + 80;
-                    if (max < 0)
-                    {
-                        max = 0;
-                    }
+                    if (max < 0) max = 0;
                     max = max * max / 4;
-                    if (max > 255)
-                    {
-                        max = 255;
-                    }
-                    heatPoints.Add(new HeatPoint(scanPoint.Position.X, scanPoint.Position.Y, (byte) (max)));
+                    if (max > 255) max = 255;
+                    heatPoints.Add(new HeatPoint(scanPoint.Position.X, scanPoint.Position.Y, (byte) max));
                 }
             }
 
             HeatPoints = new ObservableCollection<HeatPoint>(heatPoints);
-        }
-
-        public ProgressControlVm? ProgressVm
-        {
-            get => _progressVm;
-            set
-            {
-                _progressVm = value;
-                OnPropertyChanged(nameof(ProgressVm));
-            }
         }
     }
 }

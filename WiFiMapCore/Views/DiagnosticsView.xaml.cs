@@ -7,22 +7,22 @@ namespace WiFiMapCore.Views
 {
     public partial class DiagnosticsView : Window
     {
+        private ListSortDirection _lastDirection = ListSortDirection.Ascending;
+
+        private GridViewColumnHeader? _lastHeaderClicked;
+
         public DiagnosticsView()
         {
             InitializeComponent();
         }
-        
-        GridViewColumnHeader? _lastHeaderClicked = null;
-        ListSortDirection _lastDirection = ListSortDirection.Ascending;
 
-        void GridViewColumnHeaderClickedHandler(object sender,
+        private void GridViewColumnHeaderClickedHandler(object sender,
             RoutedEventArgs e)
         {
             var headerClicked = e.OriginalSource as GridViewColumnHeader;
             ListSortDirection direction;
 
             if (headerClicked != null)
-            {
                 if (headerClicked.Role != GridViewColumnHeaderRole.Padding)
                 {
                     if (headerClicked != _lastHeaderClicked)
@@ -32,18 +32,13 @@ namespace WiFiMapCore.Views
                     else
                     {
                         if (_lastDirection == ListSortDirection.Ascending)
-                        {
                             direction = ListSortDirection.Descending;
-                        }
                         else
-                        {
                             direction = ListSortDirection.Ascending;
-                        }
                     }
 
                     SortByHeader(headerClicked, direction);
                 }
-            }
         }
 
         private void SortByHeader(GridViewColumnHeader headerClicked, ListSortDirection direction)
@@ -54,21 +49,15 @@ namespace WiFiMapCore.Views
             Sort(sortBy, direction);
 
             if (direction == ListSortDirection.Ascending)
-            {
                 headerClicked.Column.HeaderTemplate =
                     Resources["HeaderTemplateArrowUp"] as DataTemplate;
-            }
             else
-            {
                 headerClicked.Column.HeaderTemplate =
                     Resources["HeaderTemplateArrowDown"] as DataTemplate;
-            }
 
             // Remove arrow from previously sorted header
             if (_lastHeaderClicked != null && _lastHeaderClicked != headerClicked)
-            {
                 _lastHeaderClicked.Column.HeaderTemplate = null;
-            }
 
             _lastHeaderClicked = headerClicked;
             _lastDirection = direction;
@@ -76,21 +65,18 @@ namespace WiFiMapCore.Views
 
         private void Sort(string? sortBy, ListSortDirection direction)
         {
-            ICollectionView dataView =
+            var dataView =
                 CollectionViewSource.GetDefaultView(lv.ItemsSource);
 
             dataView.SortDescriptions.Clear();
-            SortDescription sd = new SortDescription(sortBy, direction);
+            var sd = new SortDescription(sortBy, direction);
             dataView.SortDescriptions.Add(sd);
             dataView.Refresh();
         }
 
         private void lv_SourceUpdated(object sender, DataTransferEventArgs e)
         {
-            if (_lastHeaderClicked != null)
-            {
-                SortByHeader(_lastHeaderClicked, _lastDirection);
-            }
+            if (_lastHeaderClicked != null) SortByHeader(_lastHeaderClicked, _lastDirection);
         }
     }
 }

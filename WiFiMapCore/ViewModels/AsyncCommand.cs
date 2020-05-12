@@ -10,13 +10,13 @@ namespace WiFiMapCore.ViewModels
 
         private readonly Func<T, Task> _execute;
 
-        public AsyncCommand(Func<T,Task> execute, Func<T, bool> canExecute)
+        public AsyncCommand(Func<T, Task> execute, Func<T, bool> canExecute)
         {
             _execute = execute;
             _canExecute = canExecute;
         }
 
-        public AsyncCommand(Func<T,Task> execute) : this(execute, obj => true)
+        public AsyncCommand(Func<T, Task> execute) : this(execute, obj => true)
         {
         }
 
@@ -29,8 +29,8 @@ namespace WiFiMapCore.ViewModels
         public async void Execute(object parameter)
         {
             try
-            { 
-                await _execute((T) parameter); 
+            {
+                await _execute((T) parameter);
             }
             catch (TaskCanceledException)
             {

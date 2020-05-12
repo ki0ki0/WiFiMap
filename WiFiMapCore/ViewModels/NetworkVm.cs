@@ -11,10 +11,9 @@ namespace WiFiMapCore.ViewModels
     {
         private ObservableCollection<NetworkVm> _children;
         private bool _ignoreChildren;
+        private readonly INetworkInfo _info;
         private bool? _isChecked = false;
         private string _name = "";
-        private INetworkInfo _info;
-        public string Mac => _info.Mac;
 
         public NetworkVm(INetworkInfo info)
         {
@@ -34,6 +33,8 @@ namespace WiFiMapCore.ViewModels
             _children = new ObservableCollection<NetworkVm>(networkVms);
             foreach (var networkVm in _children) networkVm.PropertyChanged += NetworkVmOnPropertyChanged;
         }
+
+        public string Mac => _info.Mac;
 
         public string Name
         {

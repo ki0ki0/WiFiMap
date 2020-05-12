@@ -1,5 +1,4 @@
 ﻿using System.ComponentModel;
-using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
@@ -9,40 +8,34 @@ namespace WiFiMapCore.Views
     /// <summary>
     ///     Interaction logic for Results.xaml
     /// </summary>
-    public partial class ResultView : UserControl
+    public partial class ScanView : UserControl
     {
-        public ResultView()
+        private ListSortDirection _lastDirection = ListSortDirection.Ascending;
+        private GridViewColumn? _lastHeaderClickedColumn;
+
+        public ScanView()
         {
             InitializeComponent();
         }
 
-        ListSortDirection _lastDirection = ListSortDirection.Ascending;
-        private GridViewColumn? _lastHeaderClickedColumn;
-
-        void GridViewColumnHeaderClickedHandler(object sender,
+        private void GridViewColumnHeaderClickedHandler(object sender,
             RoutedEventArgs e)
         {
             var headerClicked = e.OriginalSource as GridViewColumnHeader;
             ListSortDirection direction;
 
             if (headerClicked != null)
-            {
                 if (headerClicked.Role != GridViewColumnHeaderRole.Padding)
                 {
                     if (headerClicked.Column != _lastHeaderClickedColumn)
-                    {
                         direction = ListSortDirection.Ascending;
-                    }
                     else
-                    {
-                        direction = _lastDirection == ListSortDirection.Ascending ? 
-                            ListSortDirection.Descending :
-                            ListSortDirection.Ascending;
-                    }
+                        direction = _lastDirection == ListSortDirection.Ascending
+                            ? ListSortDirection.Descending
+                            : ListSortDirection.Ascending;
 
                     SortByHeader(direction, headerClicked.Column);
                 }
-            }
         }
 
         private void SortByHeader(ListSortDirection direction, GridViewColumn headerClickedColumn)
@@ -53,21 +46,15 @@ namespace WiFiMapCore.Views
             Sort(sortBy, direction);
 
             if (direction == ListSortDirection.Ascending)
-            {
                 headerClickedColumn.HeaderTemplate =
                     Resources["HeaderTemplateArrowUp"] as DataTemplate;
-            }
             else
-            {
                 headerClickedColumn.HeaderTemplate =
                     Resources["HeaderTemplateArrowDown"] as DataTemplate;
-            }
 
             // Remove arrow from previously sorted header
             if (_lastHeaderClickedColumn != null && _lastHeaderClickedColumn != headerClickedColumn)
-            {
                 _lastHeaderClickedColumn.HeaderTemplate = null;
-            }
 
             //_lastHeaderClicked = headerClicked;
             _lastHeaderClickedColumn = headerClickedColumn;
@@ -80,7 +67,7 @@ namespace WiFiMapCore.Views
                 CollectionViewSource.GetDefaultView(lv.ItemsSource);
 
             dataView.SortDescriptions.Clear();
-            SortDescription sd = new SortDescription(sortBy, direction);
+            var sd = new SortDescription(sortBy, direction);
             dataView.SortDescriptions.Add(sd);
             dataView.Refresh();
         }

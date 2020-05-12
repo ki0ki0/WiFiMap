@@ -10,14 +10,14 @@ using System.Threading;
 
 namespace WiFiMapCore.Model.Network.ManagedWiFi
 {
-	/// <summary>
-	///     Represents a client to the Zeroconf (Native Wifi) service.
-	/// </summary>
-	/// <remarks>
-	///     This class is the entrypoint to Native Wifi management. To manage WiFi settings, create an instance
-	///     of this class.
-	/// </remarks>
-	public class WlanClient : IDisposable
+    /// <summary>
+    ///     Represents a client to the Zeroconf (Native Wifi) service.
+    /// </summary>
+    /// <remarks>
+    ///     This class is the entrypoint to Native Wifi management. To manage WiFi settings, create an instance
+    ///     of this class.
+    /// </remarks>
+    public class WlanClient : IDisposable
     {
         private readonly Dictionary<Guid, WlanInterface> ifaces = new Dictionary<Guid, WlanInterface>();
         private readonly Wlan.WlanNotificationCallbackDelegate wlanNotificationCallback;
