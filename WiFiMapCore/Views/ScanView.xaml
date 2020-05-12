@@ -54,45 +54,24 @@
     </UserControl.Resources>
 
     <Grid>
-        <DockPanel VerticalAlignment="Stretch">
-            <DockPanel DockPanel.Dock="Top" HorizontalAlignment="Stretch">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="Auto"/>
+            <ColumnDefinition Width="Auto"/>
+            <ColumnDefinition Width="*"/>
+            <ColumnDefinition Width="Auto"/>
+            <ColumnDefinition Width="Auto"/>
+        </Grid.ColumnDefinitions>
+        <TreeView Grid.Column="0" ItemsSource="{Binding Networks}"
+                  ItemTemplate="{StaticResource CheckBoxItemTemplate}" HorizontalAlignment="Stretch"/>
+        <GridSplitter Grid.Column="1" Width="5" HorizontalAlignment="Stretch"/>
+        
+        <DockPanel Grid.Column="2" VerticalAlignment="Stretch">
+            <DockPanel DockPanel.Dock="Bottom" HorizontalAlignment="Stretch" Background="{x:Static SystemColors.MenuBrush}">
                 <Label VerticalAlignment="Center">Zoom:</Label>
                 <Slider VerticalAlignment="Center" Minimum="{Binding ScaleFactorMin}"
                         Maximum="{Binding ScaleFactorMax}"
                         SmallChange="0.1" Value="{Binding ScaleFactor}" HorizontalAlignment="Stretch" />
             </DockPanel>
-
-            <TreeView DockPanel.Dock="Left" ItemsSource="{Binding Networks}"
-                      ItemTemplate="{StaticResource CheckBoxItemTemplate}" />
-            <ListView x:Name='lv' DockPanel.Dock="Right" ItemsSource="{Binding Details}"
-                      GridViewColumnHeader.Click="GridViewColumnHeaderClickedHandler">
-                <ListView.View>
-                    <GridView AllowsColumnReorder="True">
-                        <GridViewColumn Header="Ssid">
-                            <GridViewColumn.CellTemplate>
-                                <DataTemplate>
-                                    <TextBlock Text="{Binding Ssid, Mode=OneTime}">
-                                        <TextBlock.Style>
-                                            <Style TargetType="TextBlock">
-                                                <Style.Triggers>
-                                                    <DataTrigger Binding="{Binding IsSelected}" Value="True">
-                                                        <Setter Property="FontWeight" Value="Bold" />
-                                                    </DataTrigger>
-                                                </Style.Triggers>
-                                            </Style>
-                                        </TextBlock.Style>
-                                    </TextBlock>
-                                </DataTemplate>
-                            </GridViewColumn.CellTemplate>
-                        </GridViewColumn>
-                        <GridViewColumn Header="Mac" DisplayMemberBinding="{Binding Mac, Mode=OneTime}" />
-                        <GridViewColumn Header="Channel" DisplayMemberBinding="{Binding Channel, Mode=OneTime}" />
-                        <GridViewColumn Header="RSSI" DisplayMemberBinding="{Binding Rssi, Mode=OneTime}" />
-                        <GridViewColumn Header="LinkQuality" DisplayMemberBinding="{Binding LinkQuality, Mode=OneTime}" />
-                    </GridView>
-                </ListView.View>
-            </ListView>
-
             <ScrollViewer HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto"
                           CanContentScroll="True">
                 <Grid Background="Transparent">
@@ -184,6 +163,39 @@
                 </Grid>
             </ScrollViewer>
         </DockPanel>
-        <ContentControl Content="{Binding ProgressVm}" />
+        
+        
+        <GridSplitter Grid.Column="3" Width="5" HorizontalAlignment="Stretch"/>
+        
+        <ListView x:Name='lv' Grid.Column="4" ItemsSource="{Binding Details}"
+                  GridViewColumnHeader.Click="GridViewColumnHeaderClickedHandler">
+            <ListView.View>
+                <GridView AllowsColumnReorder="True">
+                    <GridViewColumn Header="Ssid">
+                        <GridViewColumn.CellTemplate>
+                            <DataTemplate>
+                                <TextBlock Text="{Binding Ssid, Mode=OneTime}">
+                                    <TextBlock.Style>
+                                        <Style TargetType="TextBlock">
+                                            <Style.Triggers>
+                                                <DataTrigger Binding="{Binding IsSelected}" Value="True">
+                                                    <Setter Property="FontWeight" Value="Bold" />
+                                                </DataTrigger>
+                                            </Style.Triggers>
+                                        </Style>
+                                    </TextBlock.Style>
+                                </TextBlock>
+                            </DataTemplate>
+                        </GridViewColumn.CellTemplate>
+                    </GridViewColumn>
+                    <GridViewColumn Header="Mac" DisplayMemberBinding="{Binding Mac, Mode=OneTime}" />
+                    <GridViewColumn Header="Channel" DisplayMemberBinding="{Binding Channel, Mode=OneTime}" />
+                    <GridViewColumn Header="RSSI" DisplayMemberBinding="{Binding Rssi, Mode=OneTime}" />
+                    <GridViewColumn Header="LinkQuality" DisplayMemberBinding="{Binding LinkQuality, Mode=OneTime}" />
+                </GridView>
+            </ListView.View>
+        </ListView>
+        
+        <ContentControl Grid.Column="0" Grid.ColumnSpan="5" Content="{Binding ProgressVm}" />
     </Grid>
 </UserControl>
