@@ -161,17 +161,8 @@ namespace WiFiMapCore.ViewModels
                 var position = e.GetPosition(inputElement);
                 await _networksSource.ForceUpdate(ProgressVm.Token);
 
-                List<INetworkInfo> bssInfo = new List<INetworkInfo>();
-                for (var i = 0; i < Settings.PointScanCount; i++)
-                {
-                    await Task.Delay(Settings.PointScanTime, ProgressVm.Token);
-                    bssInfo.AddRange(await _networksSource.ReadNetworks(ProgressVm.Token)
-                        .ToListAsync(ProgressVm.Token));
-                }
-
-                var groupBy = bssInfo.GroupBy(info => info.Mac);
-                var minInfos = groupBy.Select(infos =>
-                    infos.Aggregate((min, x) => x.Rssi > min?.Rssi ? min : x));
+                var minInfos = await _networksSource.ReadNetworks(ProgressVm.Token)
+                    .ToListAsync(ProgressVm.Token);
 
                 var scanPoint = new ScanPoint((int) position.X, (int) position.Y, minInfos);
                 ScanPoints.Add(scanPoint);

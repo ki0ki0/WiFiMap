@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Net.NetworkInformation;
+using System.Threading.Tasks;
 using WiFiMapCore.Model.Network.ManagedWiFi;
 
 namespace WiFiMapCore.Interfaces.Network
@@ -36,7 +37,7 @@ namespace WiFiMapCore.Interfaces.Network
         Wlan.WlanBssEntry[] GetNetworkBssList(Wlan.Dot11Ssid ssid, Wlan.Dot11BssType bssType, bool securityEnabled);
         Wlan.WlanProfileInfo[] GetProfiles();
         string GetProfileXml(string profileName);
-        void Scan();
+        Task<bool> Scan();
         Wlan.WlanReasonCode SetProfile(Wlan.WlanProfileFlags flags, string profileXml, bool overwrite);
     }
 }

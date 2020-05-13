@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Net.NetworkInformation;
+using System.Threading.Tasks;
 using WiFiMapCore.Interfaces.Network;
 using WiFiMapCore.Model.Network.ManagedWiFi;
 
@@ -8,15 +9,38 @@ namespace WiFiMapCore.Model.Network.Wrappers
     public class WlanInterfaceWrapper : IWlanInterface
     {
         private readonly WlanClient.WlanInterface _wlanInterface;
+        private TaskCompletionSource<bool>? _taskCompletionSource;
 
         public WlanInterfaceWrapper(WlanClient.WlanInterface wlanInterface)
         {
             _wlanInterface = wlanInterface;
         }
 
-        public void Scan()
+        public Task<bool> Scan()
         {
             _wlanInterface.Scan();
+            _taskCompletionSource = new TaskCompletionSource<bool>();
+            _wlanInterface.WlanNotification += OnNotification;
+            return _taskCompletionSource.Task.ContinueWith(b => {
+                _wlanInterface.WlanNotification -= OnNotification;
+                return b.Result;
+            });
+        }
+
+        private void OnNotification(Wlan.WlanNotificationData data)
+        {
+            if (data.notificationSource == Wlan.WlanNotificationSource.ACM)
+            {
+                switch (data.notificationCode)
+                {
+                    case (int) Wlan.WlanNotificationCodeAcm.ScanComplete:
+                        _taskCompletionSource?.SetResult(true);
+                        break;
+                    case (int) Wlan.WlanNotificationCodeAcm.ScanFail:
+                        _taskCompletionSource?.SetResult(false);
+                        break;
+                }
+            }
         }
 
         public Wlan.WlanAvailableNetwork[] GetAvailableNetworkList(Wlan.WlanGetAvailableNetworkFlags flags)
