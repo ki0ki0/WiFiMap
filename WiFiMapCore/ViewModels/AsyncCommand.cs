@@ -32,7 +32,7 @@ namespace WiFiMapCore.ViewModels
             {
                 await _execute((T) parameter);
             }
-            catch (TaskCanceledException)
+            catch (OperationCanceledException)
             {
                 // ignore
             }

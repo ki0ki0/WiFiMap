@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Net.NetworkInformation;
+using System.Threading;
 using System.Threading.Tasks;
 using WiFiMapCore.Interfaces.Network;
 using WiFiMapCore.Model.Network.ManagedWiFi;
@@ -9,22 +10,20 @@ namespace WiFiMapCore.Model.Network.Wrappers
     public class WlanInterfaceWrapper : IWlanInterface
     {
         private readonly WlanClient.WlanInterface _wlanInterface;
-        private TaskCompletionSource<bool>? _taskCompletionSource;
+        private TaskCompletionSource<bool>? _scanTaskCompletionSource;
 
         public WlanInterfaceWrapper(WlanClient.WlanInterface wlanInterface)
         {
             _wlanInterface = wlanInterface;
+            _wlanInterface.WlanNotification += OnNotification;
         }
 
-        public Task<bool> Scan()
+        public Task<bool> Scan(CancellationToken token)
         {
             _wlanInterface.Scan();
-            _taskCompletionSource = new TaskCompletionSource<bool>();
-            _wlanInterface.WlanNotification += OnNotification;
-            return _taskCompletionSource.Task.ContinueWith(b => {
-                _wlanInterface.WlanNotification -= OnNotification;
-                return b.Result;
-            });
+            _scanTaskCompletionSource = new TaskCompletionSource<bool>();
+            token.Register(() => _scanTaskCompletionSource.TrySetCanceled());
+            return _scanTaskCompletionSource.Task;
         }
 
         private void OnNotification(Wlan.WlanNotificationData data)
@@ -34,10 +33,10 @@ namespace WiFiMapCore.Model.Network.Wrappers
                 switch (data.notificationCode)
                 {
                     case (int) Wlan.WlanNotificationCodeAcm.ScanComplete:
-                        _taskCompletionSource?.SetResult(true);
+                        _scanTaskCompletionSource?.TrySetResult(true);
                         break;
                     case (int) Wlan.WlanNotificationCodeAcm.ScanFail:
-                        _taskCompletionSource?.SetResult(false);
+                        _scanTaskCompletionSource?.TrySetResult(false);
                         break;
                 }
             }

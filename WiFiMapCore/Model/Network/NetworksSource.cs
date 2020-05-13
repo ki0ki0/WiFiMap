@@ -32,7 +32,7 @@ namespace WiFiMapCore.Model.Network
 
         public async Task ForceUpdate(CancellationToken token = default)
         {
-            var tasks = _wlanClient.Interfaces.Select(@interface => @interface.Scan());
+            var tasks = _wlanClient.Interfaces.Select(@interface => @interface.Scan(token));
             await Task.WhenAll(tasks);
         }
 
@@ -41,7 +41,7 @@ namespace WiFiMapCore.Model.Network
             var selectedInterface =
                 _wlanClient.Interfaces.Single(wlanInterface => GetInterfaceId(wlanInterface) == @interface.Name);
 
-            await selectedInterface.Scan();
+            await selectedInterface.Scan(token);
         }
 
         public async IAsyncEnumerable<INetworkInfo> ReadNetworks(
