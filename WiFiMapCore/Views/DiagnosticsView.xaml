@@ -61,8 +61,42 @@
                     </GridViewColumn>
                     <GridViewColumn Header="Mac" DisplayMemberBinding="{Binding Mac}" />
                     <GridViewColumn Header="Channel" DisplayMemberBinding="{Binding Channel}" />
-                    <GridViewColumn Header="RSSI" DisplayMemberBinding="{Binding Rssi}" />
-                    <GridViewColumn Header="LinkQuality" DisplayMemberBinding="{Binding LinkQuality}" />
+                    <GridViewColumn Header="Rssi" DisplayMemberBinding="{Binding Rssi}" />
+                    <GridViewColumn Header="Quality" DisplayMemberBinding="{Binding LinkQuality}" />
+                    <GridViewColumn Header="Rssi History">
+                        <GridViewColumn.CellTemplate>
+                            <DataTemplate DataType="viewModels:NetworkInfoWithHistoryVm">
+                                <Border BorderBrush="Gray" BorderThickness="1" Width="50">
+                                    <Path StrokeThickness="2" Data="{Binding RssiGeometry}" Height="20">
+                                        <Path.Stroke>
+                                            <LinearGradientBrush StartPoint="0,0" EndPoint="0,1">
+                                                <GradientStop Color="Green" Offset="0"/>
+                                                <GradientStop Color="SandyBrown" Offset="0.65"/>
+                                                <GradientStop Color="Red"  Offset="1"/>
+                                            </LinearGradientBrush>
+                                        </Path.Stroke>
+                                    </Path>
+                                </Border>
+                            </DataTemplate>
+                        </GridViewColumn.CellTemplate>
+                    </GridViewColumn>
+                    <GridViewColumn Header="Link History">
+                        <GridViewColumn.CellTemplate>
+                            <DataTemplate DataType="viewModels:NetworkInfoWithHistoryVm">
+                                <Border BorderBrush="Gray" BorderThickness="1" Width="50">
+                                    <Path StrokeThickness="2" Data="{Binding LinkGeometry}" Height="20">
+                                        <Path.Stroke>
+                                            <LinearGradientBrush StartPoint="0,0" EndPoint="0,1">
+                                                <GradientStop Color="Green" Offset="0"/>
+                                                <GradientStop Color="SandyBrown" Offset="0.65"/>
+                                                <GradientStop Color="Red"  Offset="1"/>
+                                            </LinearGradientBrush>
+                                        </Path.Stroke>
+                                    </Path>
+                                </Border>
+                            </DataTemplate>
+                        </GridViewColumn.CellTemplate>
+                    </GridViewColumn>
                 </GridView>
             </ListView.View>
         </ListView>
