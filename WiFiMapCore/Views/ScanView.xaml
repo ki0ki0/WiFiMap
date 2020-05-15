@@ -112,7 +112,10 @@
                                       VerticalAlignment="Top">
                             <b:Interaction.Triggers>
                                 <b:EventTrigger EventName="MouseEnter">
-                                    <b:InvokeCommandAction Command="{Binding Hover}" PassEventArgsToCommand="True" />
+                                    <b:InvokeCommandAction Command="{Binding ScanPointHover}" PassEventArgsToCommand="True" />
+                                </b:EventTrigger>
+                                <b:EventTrigger EventName="MouseUp">
+                                    <b:InvokeCommandAction Command="{Binding ScanPointClick}" PassEventArgsToCommand="True" />
                                 </b:EventTrigger>
                             </b:Interaction.Triggers>
                             <ItemsControl.ItemsPanel>
@@ -138,7 +141,10 @@
                                       VerticalAlignment="Top">
                             <b:Interaction.Triggers>
                                 <b:EventTrigger EventName="MouseEnter">
-                                    <b:InvokeCommandAction Command="{Binding Hover}" PassEventArgsToCommand="True" />
+                                    <b:InvokeCommandAction Command="{Binding ScanPointHover}" PassEventArgsToCommand="True" />
+                                </b:EventTrigger>
+                                <b:EventTrigger EventName="MouseUp">
+                                    <b:InvokeCommandAction Command="{Binding ScanPointClick}" PassEventArgsToCommand="True" />
                                 </b:EventTrigger>
                             </b:Interaction.Triggers>
                             <ItemsControl.ItemsPanel>

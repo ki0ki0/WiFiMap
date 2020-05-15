@@ -129,7 +129,8 @@ namespace WiFiMapCore.ViewModels
 
         public ICommand Click => new AsyncCommand<MouseButtonEventArgs>(OnClick);
 
-        public ICommand Hover => new Command<MouseEventArgs>(OnHover);
+        public ICommand ScanPointHover => new Command<MouseEventArgs>(OnHover);
+        public ICommand ScanPointClick => new Command<MouseButtonEventArgs>(OnScanPointClick);
 
         public ICommand Wheel => new Command<MouseWheelEventArgs>(OnWheel);
 
@@ -155,20 +156,23 @@ namespace WiFiMapCore.ViewModels
 
         private async Task OnClick(MouseButtonEventArgs e)
         {
-            using (ProgressVm = new ProgressControlVm())
+            if (e.ChangedButton == MouseButton.Left)
             {
-                var inputElement = e.Source as IInputElement;
-                var position = e.GetPosition(inputElement);
-                await _networksSource.ForceUpdate(ProgressVm.Token);
+                using (ProgressVm = new ProgressControlVm())
+                {
+                    var inputElement = e.Source as IInputElement;
+                    var position = e.GetPosition(inputElement);
+                    await _networksSource.ForceUpdate(ProgressVm.Token);
 
-                var minInfos = await _networksSource.ReadNetworks(ProgressVm.Token)
-                    .ToListAsync(ProgressVm.Token);
+                    var minInfos = await _networksSource.ReadNetworks(ProgressVm.Token)
+                        .ToListAsync(ProgressVm.Token);
 
-                var scanPoint = new ScanPoint((int) position.X, (int) position.Y, minInfos);
-                ScanPoints.Add(scanPoint);
-                Project.ScanPoints.Add(scanPoint);
-                IsModified = true;
-                Update();
+                    var scanPoint = new ScanPoint((int) position.X, (int) position.Y, minInfos);
+                    ScanPoints.Add(scanPoint);
+                    Project.ScanPoints.Add(scanPoint);
+                    IsModified = true;
+                    Update();
+                }
             }
         }
 
@@ -195,6 +199,28 @@ namespace WiFiMapCore.ViewModels
 
             _currentDetailsPoint = tuple?.Item1;
             UpdateDetails();
+        }
+        
+        private void OnScanPointClick(MouseButtonEventArgs e)
+        {
+            if (e.ChangedButton == MouseButton.Right)
+            {
+                var inputElement = e.Source as IInputElement;
+                var position = e.GetPosition(inputElement);
+                var tuple = ScanPoints.Aggregate<IScanPoint, Tuple<IScanPoint, int>?>(null, (min, cur) =>
+                {
+                    var distance = Math.Abs(cur.Position.X - (int) position.X) +
+                                   Math.Abs(cur.Position.Y - (int) position.Y);
+                    return distance > min?.Item2 ? min : new Tuple<IScanPoint, int>(cur, distance);
+                });
+                if (tuple?.Item2 < 20)
+                {
+                    ScanPoints.Remove(tuple.Item1);
+                    Project.ScanPoints.Remove(tuple.Item1);
+                    IsModified = true;
+                    Update();
+                }
+            }
         }
 
         private void UpdateDetails()
