@@ -56,17 +56,22 @@
 
     <Grid>
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="Auto"/>
+            <ColumnDefinition Width="200"/>
             <ColumnDefinition Width="Auto"/>
             <ColumnDefinition Width="*"/>
             <ColumnDefinition Width="Auto"/>
-            <ColumnDefinition Width="Auto"/>
+            <ColumnDefinition Width="350"/>
         </Grid.ColumnDefinitions>
-        <TreeView Grid.Column="0" ItemsSource="{Binding Networks}"
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition/>
+        </Grid.RowDefinitions>
+        <Label Grid.Column="0" Grid.Row="0" Target="{Binding ElementName=allNetworks}" Background="{x:Static SystemColors.MenuBrush}">All networks:</Label>
+        <TreeView Grid.Column="0" Grid.Row="1" x:Name="allNetworks" ItemsSource="{Binding Networks}"
                   ItemTemplate="{StaticResource CheckBoxItemTemplate}" HorizontalAlignment="Stretch"/>
-        <GridSplitter Grid.Column="1" Width="5" HorizontalAlignment="Stretch"/>
+        <GridSplitter Grid.Column="1" Grid.RowSpan="2" Width="5" HorizontalAlignment="Stretch"/>
         
-        <DockPanel Grid.Column="2" VerticalAlignment="Stretch">
+        <DockPanel Grid.Column="2" Grid.RowSpan="2" VerticalAlignment="Stretch">
             <DockPanel DockPanel.Dock="Bottom" HorizontalAlignment="Stretch" Background="{x:Static SystemColors.MenuBrush}">
                 <Label VerticalAlignment="Center">Zoom:</Label>
                 <Slider VerticalAlignment="Center" Minimum="{Binding ScaleFactorMin}"
@@ -172,9 +177,10 @@
         </DockPanel>
         
         
-        <GridSplitter Grid.Column="3" Width="5" HorizontalAlignment="Stretch"/>
+        <GridSplitter Grid.Column="3" Grid.RowSpan="2" Width="5" HorizontalAlignment="Stretch"/>
         
-        <ListView x:Name='lv' Grid.Column="4" ItemsSource="{Binding Details}"
+        <Label Grid.Column="4" Grid.Row="0" Target="{Binding ElementName=lv}" Background="{x:Static SystemColors.MenuBrush}">Networks at last selected point:</Label>
+        <ListView x:Name='lv' Grid.Column="4"  Grid.Row="1" ItemsSource="{Binding Details}"
                   GridViewColumnHeader.Click="GridViewColumnHeaderClickedHandler">
             <ListView.View>
                 <GridView AllowsColumnReorder="True">
