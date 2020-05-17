@@ -288,12 +288,13 @@ namespace WiFiMapCore.ViewModels
                 var entities = scanPoint.BssInfo.Where(info => macs.Contains(info.Mac)).ToArray();
                 if (entities.Length > 0)
                 {
-                    var max = entities.Max(i => i.Rssi);
-                    max = max + 80;
-                    if (max < 0) max = 0;
-                    max = max * max / 4;
-                    if (max > 255) max = 255;
-                    heatPoints.Add(new HeatPoint(scanPoint.Position.X, scanPoint.Position.Y, (byte) max));
+                    var rssi = entities.Max(i => i.Rssi);
+                     rssi = rssi + 80;
+                     if (rssi < 0) rssi = 0;
+                    
+                    rssi = (int)(rssi*6.4);
+                    if (rssi > 255) rssi = 255;
+                    heatPoints.Add(new HeatPoint(scanPoint.Position.X, scanPoint.Position.Y, (byte) rssi));
                 }
             }
 
