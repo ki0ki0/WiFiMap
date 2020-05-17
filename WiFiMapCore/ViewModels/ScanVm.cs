@@ -32,6 +32,7 @@ namespace WiFiMapCore.ViewModels
         private double _scaleFactorMax = 10;
         private double _scaleFactorMin = 0.1;
         private ObservableCollection<IScanPoint> _scanPoints = new ObservableCollection<IScanPoint>();
+        private DateTime? _lastClick;
 
         public Project Project
         {
@@ -158,21 +159,26 @@ namespace WiFiMapCore.ViewModels
         {
             if (e.ChangedButton == MouseButton.Left)
             {
-                using (ProgressVm = new ProgressControlVm())
+                if (DateTime.Now - _lastClick < TimeSpan.FromSeconds(0.5))
                 {
-                    var inputElement = e.Source as IInputElement;
-                    var position = e.GetPosition(inputElement);
-                    await _networksSource.ForceUpdate(ProgressVm.Token);
+                    using (ProgressVm = new ProgressControlVm())
+                    {
+                        var inputElement = e.Source as IInputElement;
+                        var position = e.GetPosition(inputElement);
+                        await _networksSource.ForceUpdate(ProgressVm.Token);
 
-                    var minInfos = await _networksSource.ReadNetworks(ProgressVm.Token)
-                        .ToListAsync(ProgressVm.Token);
+                        var minInfos = await _networksSource.ReadNetworks(ProgressVm.Token)
+                            .ToListAsync(ProgressVm.Token);
 
-                    var scanPoint = new ScanPoint((int) position.X, (int) position.Y, minInfos);
-                    ScanPoints.Add(scanPoint);
-                    Project.ScanPoints.Add(scanPoint);
-                    IsModified = true;
-                    Update();
+                        var scanPoint = new ScanPoint((int) position.X, (int) position.Y, minInfos);
+                        ScanPoints.Add(scanPoint);
+                        Project.ScanPoints.Add(scanPoint);
+                        IsModified = true;
+                        Update();
+                    }
                 }
+
+                _lastClick = DateTime.Now;
             }
         }
 
