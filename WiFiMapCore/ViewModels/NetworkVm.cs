@@ -10,7 +10,6 @@ namespace WiFiMapCore.ViewModels
     public class NetworkVm : BaseVm
     {
         private ObservableCollection<NetworkVm> _children;
-        private bool _ignoreChildren;
         private readonly INetworkInfo _info;
         private bool? _isChecked = false;
         private string _name = "";
@@ -22,14 +21,10 @@ namespace WiFiMapCore.ViewModels
             _children = new ObservableCollection<NetworkVm>();
         }
 
-        public NetworkVm(string name, IEnumerable<INetworkInfo> macs)
+        public NetworkVm(string name, IEnumerable<NetworkVm> networkVms)
         {
             Name = name;
             _info = new NetworkInfo();
-            var networkVms = macs
-                .OrderBy(info => info.Channel)
-                .ThenBy(info => info.Mac)
-                .Select(mac => new NetworkVm(mac));
             _children = new ObservableCollection<NetworkVm>(networkVms);
             foreach (var networkVm in _children) networkVm.PropertyChanged += NetworkVmOnPropertyChanged;
         }
@@ -49,13 +44,17 @@ namespace WiFiMapCore.ViewModels
         public bool? IsChecked
         {
             get => _isChecked;
-            set
-            {
-                _isChecked = value;
-                OnPropertyChanged(nameof(IsChecked));
-                if (_ignoreChildren) return;
-                foreach (var networkVm in _children) networkVm.IsChecked = value;
-            }
+            set => UpdateIsChecked(value);
+        }
+        
+        public bool IsExpanded { get; set; }
+
+        private void UpdateIsChecked(bool? value, bool updateChildren = true)
+        {
+            _isChecked = value;
+            OnPropertyChanged(nameof(IsChecked));
+            if (!updateChildren) return;
+            foreach (var networkVm in _children) networkVm.IsChecked = value;
         }
 
         public ObservableCollection<NetworkVm> Children
@@ -70,23 +69,22 @@ namespace WiFiMapCore.ViewModels
 
         private void NetworkVmOnPropertyChanged(object sender, PropertyChangedEventArgs e)
         {
-            _ignoreChildren = true;
             if (e.PropertyName == nameof(IsChecked))
             {
+                bool? isChecked;
                 if (_children.All(i => i.IsChecked == true))
                 {
-                    IsChecked = true;
+                    isChecked = true;
                 }
                 else
                 {
                     if (_children.Any(i => i.IsChecked == true))
-                        IsChecked = null;
+                        isChecked = null;
                     else
-                        IsChecked = false;
+                        isChecked = false;
                 }
+                UpdateIsChecked(isChecked, false);
             }
-
-            _ignoreChildren = false;
         }
     }
 }

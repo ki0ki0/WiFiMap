@@ -69,7 +69,13 @@
         </Grid.RowDefinitions>
         <Label Grid.Column="0" Grid.Row="0" Target="{Binding ElementName=allNetworks}" Background="{x:Static SystemColors.MenuBrush}">All networks:</Label>
         <TreeView Grid.Column="0" Grid.Row="1" x:Name="allNetworks" ItemsSource="{Binding Networks}"
-                  ItemTemplate="{StaticResource CheckBoxItemTemplate}" HorizontalAlignment="Stretch"/>
+                  ItemTemplate="{StaticResource CheckBoxItemTemplate}" HorizontalAlignment="Stretch">
+            <TreeView.Resources>    
+                <Style TargetType="{x:Type TreeViewItem}">
+                    <Setter Property="IsExpanded" Value="{Binding IsExpanded, Mode=TwoWay}"/>
+                </Style>
+            </TreeView.Resources>
+        </TreeView>
         <GridSplitter Grid.Column="1" Grid.RowSpan="2" Width="5" HorizontalAlignment="Stretch"/>
         
         <DockPanel Grid.Column="2" Grid.RowSpan="2" VerticalAlignment="Stretch">
@@ -183,6 +189,6 @@
             </ListView.View>
         </ListView>
         
-        <ContentControl Grid.Column="0" Grid.ColumnSpan="5" Content="{Binding ProgressVm}" />
+        <ContentControl Grid.Column="0" Grid.ColumnSpan="5" Grid.RowSpan="2" Content="{Binding ProgressVm}" />
     </Grid>
 </UserControl>

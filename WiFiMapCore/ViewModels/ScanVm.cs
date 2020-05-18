@@ -230,17 +230,36 @@ namespace WiFiMapCore.ViewModels
 
         private void Update()
         {
+            var checkedItems = Networks.SelectMany(vm => vm.Children).Where(vm => vm.IsChecked == true).ToLookup(vm => vm.Mac);
+            var expandedItems = Networks.Where(vm => vm.IsExpanded).ToLookup(vm => vm.Name);
+
             var groupBy = Project.ScanPoints.SelectMany(point => point.BssInfo).GroupBy(info => info.Ssid);
 
             var networkVms = groupBy.Select(gr =>
                 {
                     var macEqualityComparer = new MacEqualityComparer();
                     var macs = gr.Distinct(macEqualityComparer);
-                    return new NetworkVm(gr.Key, macs);
+                    var vms = macs
+                        .OrderBy(info => info.Channel)
+                        .ThenBy(info => info.Mac)
+                        .Select(mac => new NetworkVm(mac));
+                    return new NetworkVm(gr.Key, vms);
                 })
                 .ToArray();
 
             foreach (var networkVm in networkVms) networkVm.PropertyChanged += NetworkVmOnPropertyChanged;
+
+            var toCheck = networkVms.SelectMany(vm => vm.Children).Where(vm => checkedItems.Contains(vm.Mac));
+            foreach (var vm in toCheck)
+            {
+                vm.IsChecked = true;
+            }
+            
+            var toExpand = networkVms.Where(vm => expandedItems.Contains(vm.Name));
+            foreach (var vm in toExpand)
+            {
+                vm.IsExpanded = true;
+            }
 
             Networks = new ObservableCollection<NetworkVm>(networkVms.OrderBy(vm => vm.Name));
 
