@@ -195,7 +195,8 @@ namespace WiFiMapCore.ViewModels
 
                 if (inputElement?.DataContext is IScanPoint point)
                 {
-                    Project.ScanPoints.Remove(point);
+                    var single = Project.ScanPoints.Single( scanPoint => scanPoint.Position == point.Position);
+                    Project.ScanPoints.Remove(single);
                     
                     IsModified = true;
                     Update();
