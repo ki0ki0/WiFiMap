@@ -6,13 +6,15 @@ namespace WiFiMapCore.ViewModels
     {
         private readonly INetworkInfo _networkInfo;
 
-        public NetworkInfoDetailsVm(INetworkInfo networkInfo, bool isSelected)
+        public NetworkInfoDetailsVm(INetworkInfo networkInfo, bool isSelected, bool isConnected)
         {
             IsSelected = isSelected;
+            IsConnected = isConnected;
             _networkInfo = networkInfo;
         }
 
         public bool IsSelected { get; }
+        public bool IsConnected { get; }
         public string Ssid => _networkInfo.Ssid;
 
         public string Mac => _networkInfo.Mac;

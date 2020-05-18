@@ -204,7 +204,7 @@ namespace WiFiMapCore.ViewModels
             }
         }
 
-        private void UpdateDetails()
+        private async void UpdateDetails()
         {
             if (_currentDetailsPoint == null)
                 return;
@@ -217,6 +217,9 @@ namespace WiFiMapCore.ViewModels
             }).ToHashSet();
 
             Details.Clear();
+            
+            var connected = (await _networksSource.GetConnected().ToListAsync()).ToHashSet();
+
             var orderedEnumerable = _currentDetailsPoint.BssInfo
                 .OrderBy(i => i.Ssid)
                 .ThenBy(i => i.Channel)
@@ -224,7 +227,7 @@ namespace WiFiMapCore.ViewModels
             foreach (var networkInfo in orderedEnumerable)
             {
                 var contains = macs.Contains(networkInfo.Mac);
-                Details.Add(new NetworkInfoDetailsVm(networkInfo, contains));
+                Details.Add(new NetworkInfoDetailsVm(networkInfo, contains, connected.Contains(networkInfo.Mac)));
             }
         }
 
