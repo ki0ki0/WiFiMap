@@ -11,5 +11,7 @@ namespace WiFiMapCore.Interfaces.Network
         Task ForceUpdate(IWifiInterface interfaceName, CancellationToken token = default);
         IAsyncEnumerable<INetworkInfo> ReadNetworks(CancellationToken token = default);
         IAsyncEnumerable<INetworkInfo> ReadNetworks(IWifiInterface interfaceName, CancellationToken token = default);
+        IAsyncEnumerable<string> GetConnected(CancellationToken token = default);
+        Task<string> GetConnected(IWifiInterface interfaceName, CancellationToken token = default);
     }
 }

@@ -42,7 +42,23 @@
                   SourceUpdated="lv_SourceUpdated">
             <ListView.View>
                 <GridView AllowsColumnReorder="True">
-                    <GridViewColumn Header="SSID" DisplayMemberBinding="{Binding Ssid}" />
+                    <GridViewColumn Header="Ssid">
+                        <GridViewColumn.CellTemplate>
+                            <DataTemplate DataType="viewModels:DiagnosticsNetworkVm">
+                                <TextBlock Text="{Binding Ssid, Mode=OneTime}">
+                                    <TextBlock.Style>
+                                        <Style TargetType="TextBlock">
+                                            <Style.Triggers>
+                                                <DataTrigger Binding="{Binding IsConnected}" Value="True">
+                                                    <Setter Property="FontWeight" Value="Bold" />
+                                                </DataTrigger>
+                                            </Style.Triggers>
+                                        </Style>
+                                    </TextBlock.Style>
+                                </TextBlock>
+                            </DataTemplate>
+                        </GridViewColumn.CellTemplate>
+                    </GridViewColumn>
                     <GridViewColumn Header="Mac" DisplayMemberBinding="{Binding Mac}" />
                     <GridViewColumn Header="Channel" DisplayMemberBinding="{Binding Channel}" />
                     <GridViewColumn Header="RSSI" DisplayMemberBinding="{Binding Rssi}" />

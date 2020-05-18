@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Linq;
@@ -16,11 +17,12 @@ namespace WiFiMapCore.ViewModels
         private bool? _isChecked = false;
         private string _name = "";
 
-        public NetworkVm(INetworkInfo info)
+        public NetworkVm(INetworkInfo info, bool isConnected)
         {
             _info = info;
             Name = $"{info.Mac}({info.Channel})";
             _children = new ObservableCollection<NetworkVm>();
+            IsConnected = isConnected;
         }
 
         public NetworkVm(string name, IEnumerable<NetworkVm> networkVms)
@@ -29,6 +31,7 @@ namespace WiFiMapCore.ViewModels
             _info = new NetworkInfo();
             _children = new ObservableCollection<NetworkVm>(networkVms);
             foreach (var networkVm in _children) networkVm.PropertyChanged += NetworkVmOnPropertyChanged;
+            IsConnected = networkVms.Any(vm => vm.IsConnected);
         }
 
         public string Mac => _info.Mac;
@@ -50,6 +53,7 @@ namespace WiFiMapCore.ViewModels
         }
         
         public bool IsExpanded { get; set; }
+        public bool IsConnected { get; set; }
         
         public ICommand SpacePressed  => new ActionCommand(OnSpacePressed);
 

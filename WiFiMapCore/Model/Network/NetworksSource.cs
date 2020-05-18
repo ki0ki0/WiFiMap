@@ -75,6 +75,22 @@ namespace WiFiMapCore.Model.Network
             }
         }
 
+        public IAsyncEnumerable<string> GetConnected(CancellationToken token = default)
+        {
+            return _wlanClient.Interfaces.Select(wlanInterface =>
+                    NetworkInfo.BssidToMac(wlanInterface.CurrentConnection.wlanAssociationAttributes.dot11Bssid))
+                .ToAsyncEnumerable();
+        }
+        
+        public async Task<string> GetConnected(IWifiInterface @interface, CancellationToken token = default)
+        {
+            var selectedInterface =
+                _wlanClient.Interfaces.Single(wlanInterface => GetInterfaceId(wlanInterface) == @interface.Name);
+
+            await Task.FromResult<object?>(null);
+            return NetworkInfo.BssidToMac(selectedInterface.CurrentConnection.wlanAssociationAttributes.dot11Bssid);
+        }
+
         private string GetInterfaceId(IWlanInterface wlanInterface)
         {
             string? wlanInterfaceInterfaceName = null;

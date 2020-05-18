@@ -228,12 +228,14 @@ namespace WiFiMapCore.ViewModels
             }
         }
 
-        private void Update()
+        private async void Update()
         {
             var checkedItems = Networks.SelectMany(vm => vm.Children).Where(vm => vm.IsChecked == true).ToLookup(vm => vm.Mac);
             var expandedItems = Networks.Where(vm => vm.IsExpanded).ToLookup(vm => vm.Name);
 
             var groupBy = Project.ScanPoints.SelectMany(point => point.BssInfo).GroupBy(info => info.Ssid);
+            
+            var connected = (await _networksSource.GetConnected().ToListAsync()).ToHashSet();
 
             var networkVms = groupBy.Select(gr =>
                 {
@@ -242,7 +244,7 @@ namespace WiFiMapCore.ViewModels
                     var vms = macs
                         .OrderBy(info => info.Channel)
                         .ThenBy(info => info.Mac)
-                        .Select(mac => new NetworkVm(mac));
+                        .Select(mac => new NetworkVm(mac, connected.Contains(mac.Mac)));
                     return new NetworkVm(gr.Key, vms);
                 })
                 .ToArray();
