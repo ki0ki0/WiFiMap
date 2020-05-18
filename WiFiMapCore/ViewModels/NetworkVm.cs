@@ -2,6 +2,8 @@
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Linq;
+using System.Windows.Input;
+using Microsoft.Xaml.Behaviors.Core;
 using WiFiMapCore.Interfaces.Network;
 using WiFiMapCore.Model.Network;
 
@@ -48,6 +50,13 @@ namespace WiFiMapCore.ViewModels
         }
         
         public bool IsExpanded { get; set; }
+        
+        public ICommand SpacePressed  => new ActionCommand(OnSpacePressed);
+
+        private void OnSpacePressed()
+        {
+            IsChecked = IsChecked != true;
+        }
 
         private void UpdateIsChecked(bool? value, bool updateChildren = true)
         {

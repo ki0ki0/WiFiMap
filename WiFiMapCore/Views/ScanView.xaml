@@ -11,8 +11,8 @@
              d:DesignHeight="450" d:DesignWidth="800" d:DataContext="{d:DesignData viewModels:ResultVm}">
 
     <UserControl.Resources>
-            <viewModels:BooleanToColorConverter x:Key="IntensityToColorConverter" />
-            <HierarchicalDataTemplate x:Key="CheckBoxItemTemplate" ItemsSource="{Binding Children}"
+        <viewModels:BooleanToColorConverter x:Key="IntensityToColorConverter" />
+        <HierarchicalDataTemplate x:Key="CheckBoxItemTemplate" ItemsSource="{Binding Children}"
                                   DataType="viewModels:NetworkVm">
             <StackPanel Orientation="Horizontal">
                 <CheckBox Focusable="False" IsChecked="{Binding IsChecked}" VerticalAlignment="Center" />
@@ -75,6 +75,9 @@
                     <Setter Property="IsExpanded" Value="{Binding IsExpanded, Mode=TwoWay}"/>
                 </Style>
             </TreeView.Resources>
+            <TreeView.InputBindings>
+                <KeyBinding Key="Space" Command="{Binding ElementName=allNetworks, Path=SelectedItem.SpacePressed}"/>
+            </TreeView.InputBindings>
         </TreeView>
         <GridSplitter Grid.Column="1" Grid.RowSpan="2" Width="5" HorizontalAlignment="Stretch"/>
         
