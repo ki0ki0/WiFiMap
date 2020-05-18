@@ -1,5 +1,6 @@
 using System;
 using System.Collections.ObjectModel;
+using System.Collections.Specialized;
 using System.Linq;
 using System.Windows;
 using System.Windows.Media;
@@ -12,7 +13,7 @@ namespace WiFiMapCore.HeatMap
 
         public static readonly DependencyProperty PointsSourceProperty = DependencyProperty.RegisterAttached(
             "PointsSource",
-            typeof(ObservableCollection<HeatPoint>),
+            typeof(ObservableCollection<IHeatPoint>),
             typeof(HeatMap),
             new FrameworkPropertyMetadata(OnPointsSourceChanged)
         );
@@ -40,12 +41,12 @@ namespace WiFiMapCore.HeatMap
 
         protected override int VisualChildrenCount => _heatMapVisuals.Count;
 
-        public static ObservableCollection<HeatPoint> GetPointsSource(UIElement element)
+        public static ObservableCollection<IHeatPoint> GetPointsSource(UIElement element)
         {
-            return (ObservableCollection<HeatPoint>) element.GetValue(PointsSourceProperty);
+            return (ObservableCollection<IHeatPoint>) element.GetValue(PointsSourceProperty);
         }
 
-        public static void SetPointsSource(UIElement element, ObservableCollection<HeatPoint> value)
+        public static void SetPointsSource(UIElement element, ObservableCollection<IHeatPoint> value)
         {
             element.SetValue(PointsSourceProperty, value);
         }
@@ -55,7 +56,7 @@ namespace WiFiMapCore.HeatMap
             var heatMap = (HeatMap) d;
             heatMap.Render();
         }
-
+        
         protected override Visual GetVisualChild(int index)
         {
             if (index < 0 || index >= _heatMapVisuals.Count)

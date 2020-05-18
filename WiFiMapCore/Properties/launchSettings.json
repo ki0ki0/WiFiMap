@@ -2,7 +2,7 @@
   "profiles": {
     "WiFiMapCore": {
       "commandName": "Project",
-      "commandLineArgs": "C:\\Users\\ki0\\source\\repos\\ki0ki0\\flat.heatproject"
+      "commandLineArgs": "C:\\Users\\IhorK\\source\\repos\\ki0ki0\\WiFiMap\\WiFiMapCore\\bin\\flat_full1.heatproject"
     }
   }
 }

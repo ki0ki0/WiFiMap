@@ -22,7 +22,7 @@ namespace WiFiMapCore.ViewModels
         private readonly NetworksSource _networksSource = new NetworksSource();
         private IScanPoint? _currentDetailsPoint;
         private ObservableCollection<INetworkInfo> _details = new ObservableCollection<INetworkInfo>();
-        private ObservableCollection<HeatPoint> _heatPoints = new ObservableCollection<HeatPoint>();
+        private ObservableCollection<IHeatPoint> _heatPoints = new ObservableCollection<IHeatPoint>();
         private ImageSource _image = new BitmapImage();
         private bool _isModified;
         private ObservableCollection<NetworkVm> _networks = new ObservableCollection<NetworkVm>();
@@ -41,7 +41,6 @@ namespace WiFiMapCore.ViewModels
             {
                 _project = value;
                 Image = ImageCoder.ByteToImage(Project.Bitmap);
-                ScanPoints = new ObservableCollection<IScanPoint>(Project.ScanPoints);
                 Update();
             }
         }
@@ -56,17 +55,7 @@ namespace WiFiMapCore.ViewModels
             }
         }
 
-        public ObservableCollection<IScanPoint> ScanPoints
-        {
-            get => _scanPoints;
-            set
-            {
-                _scanPoints = value;
-                OnPropertyChanged(nameof(ScanPoints));
-            }
-        }
-
-        public ObservableCollection<HeatPoint> HeatPoints
+        public ObservableCollection<IHeatPoint> HeatPoints
         {
             get => _heatPoints;
             set
@@ -171,7 +160,6 @@ namespace WiFiMapCore.ViewModels
                             .ToListAsync(ProgressVm.Token);
 
                         var scanPoint = new ScanPoint((int) position.X, (int) position.Y, minInfos);
-                        ScanPoints.Add(scanPoint);
                         Project.ScanPoints.Add(scanPoint);
                         IsModified = true;
                         Update();
@@ -194,16 +182,8 @@ namespace WiFiMapCore.ViewModels
 
         private void OnHover(MouseEventArgs e)
         {
-            var inputElement = e.Source as IInputElement;
-            var position = e.GetPosition(inputElement);
-            var tuple = ScanPoints.Aggregate<IScanPoint, Tuple<IScanPoint, int>?>(null, (min, cur) =>
-            {
-                var distance = Math.Abs(cur.Position.X - (int) position.X) +
-                               Math.Abs(cur.Position.Y - (int) position.Y);
-                return distance > min?.Item2 ? min : new Tuple<IScanPoint, int>(cur, distance);
-            });
-
-            _currentDetailsPoint = tuple?.Item1;
+            var inputElement = e.Source as FrameworkElement;
+            _currentDetailsPoint =  inputElement?.DataContext as IScanPoint;
             UpdateDetails();
         }
         
@@ -211,18 +191,12 @@ namespace WiFiMapCore.ViewModels
         {
             if (e.ChangedButton == MouseButton.Right)
             {
-                var inputElement = e.Source as IInputElement;
-                var position = e.GetPosition(inputElement);
-                var tuple = ScanPoints.Aggregate<IScanPoint, Tuple<IScanPoint, int>?>(null, (min, cur) =>
+                var inputElement = e.Source as FrameworkElement;
+
+                if (inputElement?.DataContext is IScanPoint point)
                 {
-                    var distance = Math.Abs(cur.Position.X - (int) position.X) +
-                                   Math.Abs(cur.Position.Y - (int) position.Y);
-                    return distance > min?.Item2 ? min : new Tuple<IScanPoint, int>(cur, distance);
-                });
-                if (tuple?.Item2 < 20)
-                {
-                    ScanPoints.Remove(tuple.Item1);
-                    Project.ScanPoints.Remove(tuple.Item1);
+                    Project.ScanPoints.Remove(point);
+                    
                     IsModified = true;
                     Update();
                 }
@@ -255,7 +229,7 @@ namespace WiFiMapCore.ViewModels
 
         private void Update()
         {
-            var groupBy = ScanPoints.SelectMany(point => point.BssInfo).GroupBy(info => info.Ssid);
+            var groupBy = Project.ScanPoints.SelectMany(point => point.BssInfo).GroupBy(info => info.Ssid);
 
             var networkVms = groupBy.Select(gr =>
                 {
@@ -280,7 +254,7 @@ namespace WiFiMapCore.ViewModels
 
         private void UpdateHeatMap()
         {
-            var heatPoints = new List<HeatPoint>();
+            var heatPoints = new List<HeatPointVm>();
 
             var macs = Networks.SelectMany(vm =>
             {
@@ -289,7 +263,7 @@ namespace WiFiMapCore.ViewModels
                     .Select(i => i.Mac);
             }).ToHashSet();
 
-            foreach (var scanPoint in ScanPoints)
+            foreach (var scanPoint in Project.ScanPoints)
             {
                 var entities = scanPoint.BssInfo.Where(info => macs.Contains(info.Mac)).ToArray();
                 if (entities.Length > 0)
@@ -300,11 +274,15 @@ namespace WiFiMapCore.ViewModels
                     
                     rssi = (int)(rssi*6.4);
                     if (rssi > 255) rssi = 255;
-                    heatPoints.Add(new HeatPoint(scanPoint.Position.X, scanPoint.Position.Y, (byte) rssi));
+                    heatPoints.Add(new HeatPointVm(scanPoint.Position, (byte) rssi, scanPoint.BssInfo));
+                }
+                else
+                {
+                    heatPoints.Add(new HeatPointVm(scanPoint.Position, scanPoint.BssInfo));
                 }
             }
 
-            HeatPoints = new ObservableCollection<HeatPoint>(heatPoints);
+            HeatPoints = new ObservableCollection<IHeatPoint>(heatPoints);
         }
     }
 }
